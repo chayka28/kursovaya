@@ -1,0 +1,78 @@
+<header>
+  <div class="header-container">
+    <div class="logo">
+      <a href="index.html"><img src="assets/img/minilogo.png" alt="Лого"></a>
+    </div>
+
+    <nav>
+      <ul class="menu">
+        <li><a href="index.html">Главная</a></li>
+        <li><a href="program.html">Программа</a></li>
+        <li class="dropdown">
+          <a href="#">Участникам <span class="arrow">▾</span></a>
+          <ul class="dropdown-menu">
+            <li><a href="apply.html">Подать заявку</a></li>
+            <li><a href="thesis.html">Подача тезисов</a></li>
+          </ul>
+        </li>
+        <li><a href="about.html">О конференции</a></li>
+        <li><a href="contact.html">Контакты</a></li>
+      </ul>
+    </nav>
+
+    <div class="auth-block">
+      <a id="loginBtn" class="auth-link">Вход</a>
+      <span class="divider"></span>
+      <a id="registerBtn" class="auth-link">Регистрация</a>
+    </div>
+  </div>
+</header>
+
+<!-- --- МОДАЛЬНЫЕ ОКНА --- -->
+    
+    <!-- --- ВХОД --- -->
+<div id="loginModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Вход в аккаунт</h2>
+    <form id="loginForm">
+      <input type="email" id="login_email" name="email" placeholder="Email" required>
+      <input type="password" id="login_password" name="password" placeholder="Пароль" required>      
+      <div class="remember-me">
+        <input type="checkbox" id="saveMe" name="rememberMe" required>
+        <label for="saveMe">Запомнить меня</label>        
+      </div>
+      <button type="submit">Войти</button>     
+      <a href="#" id="forgotPasswordLink" class="link">Забыл пароль?</a>
+    </form>
+  </div>
+</div>
+
+    <!-- --- РЕГИСТРАЦИЯ --- -->
+<div id="registerModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Регистрация</h2>
+    <form id="registerForm">
+      <input type="text" id="register_fullname" name="fullname" placeholder="Имя и фамилия" required>
+      <input type="email" id="register_email" name="email" placeholder="Email" required>
+      <input type="password" id="register_password" name="password" placeholder="Пароль" required>
+      <button type="submit">Создать аккаунт</button>
+    </form>
+  </div>
+</div>
+
+
+    <!-- --- ВОССТАНОВЛЕНИЕ --- -->
+<div id="resetModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Сброс пароля</h2>
+    <form id="resetForm">
+      <input type="email" id="reset_email" name="email" placeholder="Введите ваш Email" required>
+      <button type="submit">Отправить ссылку для сброса</button>
+    </form>
+  </div>
+</div>
+
+<script src="/scripts/index.js" defer></script>
