@@ -3,12 +3,52 @@
 {% block title %}Профиль{% endblock %}
 
 {% block content %}
-<h1>Личный кабинет</h1>
+<section class="profile-page">
 
-<div class="profile-card">
-  <p><strong>Имя:</strong> {{ user.fullname }}</p>
-  <p><strong>Email:</strong> {{ user.email }}</p>
+  <div class="profile-card">
+    <h2>👤 Профиль</h2>
+    <p><strong>Имя:</strong> {{ user.fullname }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+  </div>
 
-  <a href="/logout" class="btn">Выйти</a>
-</div>
+  <div class="profile-card">
+    <h2>📌 Статус заявки</h2>
+
+    {% if user.application_status == "approved" %}
+      <span class="status approved">Одобрена</span>
+    {% elif user.application_status == "rejected" %}
+      <span class="status rejected">Отклонена</span>
+    {% elif user.application_status == "submitted" %}
+      <span class="status pending">На рассмотрении</span>
+    {% else %}
+      <span class="status none">Заявка не подана</span>
+    {% endif %}
+  </div>
+
+  <div class="profile-card">
+    <h2>📝 Мои тезисы</h2>
+
+    {% if theses %}
+      <ul class="thesis-list">
+        {% for thesis in theses %}
+          <li class="thesis-item">
+            <h4>{{ thesis.title }}</h4>
+            <p>{{ thesis.description }}</p>
+            <span class="status {{ thesis.status }}">
+              {{ thesis.status|capitalize }}
+            </span>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="empty">Вы ещё не подали ни одного тезиса</p>
+    {% endif %}
+  </div>
+
+  <div class="profile-actions">
+    <a href="/apply" class="btn primary">Подать заявку</a>
+    <a href="/thesis" class="btn secondary">Отправить тезисы</a>
+  </div>
+
+</section>
 {% endblock %}

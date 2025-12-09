@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Сброс пароля{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="/style/reset.css">
+
+<section class="reset-container">
+    <h2>🔐 Восстановление пароля</h2>
+
+    <form id="newPasswordForm">
+        <input type="hidden" id="token" value="{{ token }}">
+
+        <label>Новый пароль</label>
+        <input type="password" id="password" placeholder="Введите новый пароль" required>
+
+        <label>Повторите пароль</label>
+        <input type="password" id="password_confirm" placeholder="Повторите новый пароль" required>
+
+        <button type="submit">Сменить пароль</button>
+    </form>
+
+    <p class="back-link">
+        <a href="/">Вернуться на главную</a>
+    </p>
+</section>
+
+<script src="/scripts/reset.js"></script>
+
+{% endblock %}

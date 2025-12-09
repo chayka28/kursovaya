@@ -1,8 +1,16 @@
 {% extends "base.html" %}
-
-{% block title %}Главная{% endblock %}
+{% block title %}Подача тезисов{% endblock %}
 
 {% block content %}
-<h1>Главная страница</h1>
-<p>Контент главной страницы</p>
+<section class="thesis-form">
+  <h2>📄 Отправка тезисов</h2>
+
+  <form method="post" action="/thesis/submit">
+    <input type="text" name="title" placeholder="Название тезиса" required>
+
+    <textarea name="abstract" rows="6" placeholder="Введите ваш тезис" required></textarea>
+
+    <button type="submit">Отправить</button>
+  </form>
+</section>
 {% endblock %}
