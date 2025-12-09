@@ -1,0 +1,82 @@
+<header>
+  <div class="header-container">
+    <div class="logo">
+      <a href="/"><img src="/assets/img/minilogo.png" alt="Лого"></a>
+    </div>
+
+    <nav>
+      <ul class="menu">
+        <li><a href="/">Главная</a></li>
+        <li><a href="/program">Программа</a></li>
+        <li class="dropdown">
+          <a href="#">Участникам <span class="arrow">▾</span></a>
+          <ul class="dropdown-menu">
+            <li><a href="/apply">Подать заявку</a></li>
+            <li><a href="/thesis">Подача тезисов</a></li>
+          </ul>
+        </li>
+
+        <li><a href="/about">О конференции</a></li>
+        <li><a href="/contact">Контакты</a></li>
+      </ul>
+    </nav>
+
+    <div class="auth-block">
+      <a id="loginBtn" class="auth-link">Вход</a>
+      <span class="divider"></span>
+      <a id="registerBtn" class="auth-link">Регистрация</a>
+    </div>
+  </div>
+</header>
+
+<!-- ===== МОДАЛЬНЫЕ ОКНА ===== -->
+
+<!-- ВХОД -->
+<div id="loginModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Вход в аккаунт</h2>
+
+    <form id="loginForm">
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="password" name="password" placeholder="Пароль" required>
+
+      <div class="remember-me">
+        <input type="checkbox" id="saveMe">
+        <label for="saveMe">Запомнить меня</label>
+      </div>
+
+      <button type="submit">Войти</button>
+      <a href="#" id="forgotPasswordLink" class="link">Забыл пароль?</a>
+    </form>
+  </div>
+</div>
+
+<!-- РЕГИСТРАЦИЯ -->
+<div id="registerModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Регистрация</h2>
+
+    <form id="registerForm">
+      <input type="text" name="fullname" placeholder="Имя и фамилия" required>
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="password" name="password" placeholder="Пароль" required>
+
+      <button type="submit">Создать аккаунт</button>
+    </form>
+  </div>
+</div>
+
+<!-- СБРОС -->
+<div id="resetModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Сброс пароля</h2>
+
+    <form id="resetForm">
+      <input type="email" name="email" placeholder="Введите Email" required>
+      <button type="submit">Отправить</button>
+    </form>
+  </div>
+</div>

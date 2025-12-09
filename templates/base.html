@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+
+  <title>{% block title %}Сайт{% endblock %}</title>
+
+  <link rel="stylesheet" href="/style/menu.css">
+  <link rel="stylesheet" href="/style/main.css">
+</head>
+<body>
+
+  {% include "menu.html" %}
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <script src="/scripts/index.js" defer></script>
+</body>
+</html>

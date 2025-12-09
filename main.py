@@ -1,20 +1,27 @@
-from fastapi import FastAPI
-from pydantic import BaseModel, EmailStr
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
+from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
-from fastapi import Request
+from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, EmailStr
 
 app = FastAPI()
 
-# Инициализация шаблонов Jinja2
-templates = Jinja2Templates(directory=".")
+# =========================
+# ШАБЛОНЫ (HTML + Jinja2)
+# =========================
+templates = Jinja2Templates(directory="templates")
 
-# Монтируем статику на путь "/"
-app.mount("/", StaticFiles(directory=".", html=True), name="static")
+# =========================
+# СТАТИКА (JS / CSS / IMG)
+# =========================
+app.mount("/scripts", StaticFiles(directory="scripts"), name="scripts")
+app.mount("/style", StaticFiles(directory="style"), name="style")
+app.mount("/assets", StaticFiles(directory="assets"), name="assets")
 
-# Описываем формы, которые принимает сервер
+# =========================
+# DATA MODELS
+# =========================
 class RegisterData(BaseModel):
     fullname: str
     email: EmailStr
@@ -27,40 +34,44 @@ class LoginData(BaseModel):
 class ResetData(BaseModel):
     email: EmailStr
 
+# =========================
+# API ENDPOINTS
+# =========================
 @app.post("/register")
-def register(data: RegisterData):
-    return {"message": f"Пользователь {data.fullname} успешно зарегистрирован"}
+async def register(data: RegisterData):
+    return {"message": f"Пользователь {data.fullname} зарегистрирован"}
 
 @app.post("/login")
-def login(data: LoginData):
+async def login(data: LoginData):
     return {"message": f"Вход выполнен: {data.email}"}
 
 @app.post("/reset-password")
-def reset(data: ResetData):
-    return {"message": f"Письмо отправлено на {data.email}"}
+async def reset(data: ResetData):
+    return {"message": f"Письмо отправлено: {data.email}"}
 
-# Главная страница
+# =========================
+# HTML PAGES
+# =========================
 @app.get("/", response_class=HTMLResponse)
-async def get_home(request: Request):
+async def home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
-# Страница "О нас"
 @app.get("/about", response_class=HTMLResponse)
-async def get_about(request: Request):
+async def about(request: Request):
     return templates.TemplateResponse("about.html", {"request": request})
 
-# Страница "Контакты"
 @app.get("/contact", response_class=HTMLResponse)
-async def get_contact(request: Request):
+async def contact(request: Request):
     return templates.TemplateResponse("contact.html", {"request": request})
 
-# Страница "Программа"
 @app.get("/program", response_class=HTMLResponse)
-async def get_program(request: Request):
+async def program(request: Request):
     return templates.TemplateResponse("program.html", {"request": request})
 
-# Разрешаем запросы с твоего сайта
-app.add_middleware(
+# =========================
+# CORS (можно оставить)
+# =========================
+app.add_middleware( 
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
