@@ -23,9 +23,15 @@
     </nav>
 
     <div class="auth-block" id="authBlock">
-      <a id="loginBtn" class="auth-link">Вход</a>
-      <span class="divider"></span>
-      <a id="registerBtn" class="auth-link">Регистрация</a>
+      {% if user %}
+        <a href="/profile" class="auth-link">Профиль</a>
+        <span class="divider"></span>
+        <a href="/logout" class="auth-link">Выход</a>
+      {% else %}
+        <a id="loginBtn" class="auth-link">Вход</a>
+        <span class="divider"></span>
+        <a id="registerBtn" class="auth-link">Регистрация</a>
+      {% endif %}
     </div>
   </div>
 </header>
