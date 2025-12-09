@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (savedEmail) {
       const form = document.getElementById('loginForm');
       form.elements["email"].value = savedEmail;
-      if (form.elements["rememverMe"]){
+      if (form.elements["rememerMe"]){
         form.elements["rememberMe"].checked = true;
       }
     }
