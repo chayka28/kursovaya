@@ -1,28 +1,8 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style/menu.css">
-  <title>CodeFuture 2025</title>
-</head>
-<body>
-  <div id="menu"></div>
+{% extends "base.html" %}
 
-  <main>
-    <h1>Главная страница</h1>
-    <p>Добро пожаловать на сайт конференции!</p>
-  </main>
-  <script>
-    fetch("menu.html")
-      .then(r => r.text())
-      .then(html => {
-        document.getElementById("menu").innerHTML = html;
-        const script = document.createElement("script");
-        script.src = "scripts/menu.js";
-        document.body.appendChild(script);
-      });
-  </script>
-  <script src="scripts/menu.js"></script>
-</body>
-</html>
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+<h1>Главная страница</h1>
+<p>Контент главной страницы</p>
+{% endblock %}
