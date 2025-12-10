@@ -11,19 +11,22 @@
     <p><strong>Email:</strong> {{ user.email }}</p>
   </div>
 
-  <div class="profile-card">
+<div class="profile-card">
     <h2>📌 Статус заявки</h2>
 
-    {% if user.application_status == "approved" %}
-      <span class="status approved">Одобрена</span>
-    {% elif user.application_status == "rejected" %}
-      <span class="status rejected">Отклонена</span>
-    {% elif user.application_status == "submitted" %}
-      <span class="status pending">На рассмотрении</span>
+    {% if last_application %}
+        {% if last_application.status == "approved" %}
+            <span class="status approved">Одобрена</span>
+        {% elif last_application.status == "rejected" %}
+            <span class="status rejected">Отклонена</span>
+        {% else %}
+            <span class="status pending">На рассмотрении</span>
+        {% endif %}
     {% else %}
-      <span class="status none">Заявка не подана</span>
+        <span class="status none">Заявка не подана</span>
     {% endif %}
-  </div>
+</div>
+
 
   <div class="profile-card">
     <h2>📝 Мои тезисы</h2>

@@ -1,8 +1,67 @@
 {% extends "base.html" %}
 
-{% block title %}Главная{% endblock %}
+{% block title %}Подача заявки{% endblock %}
 
 {% block content %}
-<h1>Главная страница</h1>
-<p>Контент главной страницы</p>
+
+<div class="apply-container">
+
+    {% if already_applied %}
+        <div class="info-box">
+            <h2>✅ Заявка уже подана</h2>
+            <p>Отследить статус можно в <a href="/profile">профиле</a>.</p>
+        </div>
+    {% else %}
+
+    <h1>Подача заявки на онлайн-конференцию</h1>
+
+    <div class="role-switch">
+        <button type="button" class="role-btn active" data-role="listener">Слушатель</button>
+        <button type="button" class="role-btn" data-role="speaker">Спикер</button>
+    </div>
+
+    <form id="application-form" class="application-form">
+        <input type="hidden" name="role" value="listener">
+
+        <div class="form-block common-fields">
+            <label>ФИО
+                <input type="text" name="full_name" required>
+            </label>
+
+            <label>Email
+                <input type="email" name="email" required>
+            </label>
+
+            <label>Контакт (Telegram)
+                <input type="text" name="contact" required>
+            </label>
+        </div>
+
+        <div id="listener-fields" class="form-block role-fields">
+            <label>Интересующие темы
+                <textarea name="interests"></textarea>
+            </label>
+        </div>
+
+        <div id="speaker-fields" class="form-block role-fields hidden">
+            <label>Тема доклада
+                <input type="text" name="title">
+            </label>
+
+            <label>Кратко о докладе
+                <textarea name="thesis"></textarea>
+            </label>
+
+            <label>Опыт выступлений
+                <textarea name="experience"></textarea>
+            </label>
+        </div>
+
+        <button type="submit" class="submit-btn">Отправить заявку</button>
+    </form>
+
+    {% endif %}
+</div>
+
+<script src="/scripts/apply.js"></script>
 {% endblock %}

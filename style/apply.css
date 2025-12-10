@@ -1,0 +1,95 @@
+/* Контейнер формы */
+.apply-container {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Блок с информацией о поданной заявке */
+.info-box {
+    padding: 20px;
+    background-color: #e0f7e9;
+    border-left: 5px solid #2ecc71;
+    border-radius: 5px;
+}
+
+/* Переключение ролей */
+.role-switch {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.role-btn {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    background: #f7f7f7;
+    transition: background 0.2s;
+}
+
+.role-btn.active {
+    background: #2ecc71;
+    color: #fff;
+    border-color: #27ae60;
+}
+
+/* Общие поля формы */
+.application-form label {
+    display: block;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+.application-form input,
+.application-form textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-top: 5px;
+    box-sizing: border-box;
+}
+
+.application-form textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Скрытые поля ролей */
+.role-fields.hidden {
+    display: none;
+}
+
+/* Кнопка отправки */
+.submit-btn {
+    display: inline-block;
+    padding: 12px 20px;
+    background-color: #2ecc71;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.submit-btn:hover {
+    background-color: #27ae60;
+}
+
+.apply-container {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+}
+
+/* Остальной CSS такой же, как у тебя был */
