@@ -5,12 +5,24 @@
 <section class="thesis-form">
   <h2>📄 Отправка тезисов</h2>
 
-  <form method="post" action="/thesis/submit">
+  <!-- Notification for 5 thesis limit -->
+  {% if thesis_count >= 5 %}
+  <div class="notification success">
+    ✅ Достигнут лимит 5 тезисов. Больше не можно отправлять.
+  </div>
+  {% else %}
+  <div id="notification" class="notification"></div>
+  <div id="thesis-counter">
+    Вы отправили {{ thesis_count or 0 }} / 5 тезисов
+  </div>
+
+  <form id="thesis-form" method="POST" action="/thesis/submit">
     <input type="text" name="title" placeholder="Название тезиса" required>
-
     <textarea name="abstract" rows="6" placeholder="Введите ваш тезис" required></textarea>
-
-    <button type="submit">Отправить</button>
+    <button type="submit" id="submit-thesis" {% if thesis_count >= 5 %}disabled{% endif %}>Отправить</button>
   </form>
+  {% endif %}
 </section>
+
+<script src="/scripts/thesis.js"></script>
 {% endblock %}

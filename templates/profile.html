@@ -11,22 +11,21 @@
     <p><strong>Email:</strong> {{ user.email }}</p>
   </div>
 
-<div class="profile-card">
+  <div class="profile-card">
     <h2>📌 Статус заявки</h2>
 
     {% if last_application %}
-        {% if last_application.status == "approved" %}
-            <span class="status approved">Одобрена</span>
-        {% elif last_application.status == "rejected" %}
-            <span class="status rejected">Отклонена</span>
-        {% else %}
-            <span class="status pending">На рассмотрении</span>
-        {% endif %}
+      {% if last_application.status == "approved" %}
+        <span class="status approved">Одобрена</span>
+      {% elif last_application.status == "rejected" %}
+        <span class="status rejected">Отклонена</span>
+      {% else %}
+        <span class="status pending">На рассмотрении</span>
+      {% endif %}
     {% else %}
-        <span class="status none">Заявка не подана</span>
+      <span class="status none">Заявка не подана</span>
     {% endif %}
-</div>
-
+  </div>
 
   <div class="profile-card">
     <h2>📝 Мои тезисы</h2>
@@ -34,12 +33,19 @@
     {% if theses %}
       <ul class="thesis-list">
         {% for thesis in theses %}
-          <li class="thesis-item">
+          <li class="thesis-item" id="thesis-{{ thesis.id }}">
             <h4>{{ thesis.title }}</h4>
-            <p>{{ thesis.description }}</p>
-            <span class="status {{ thesis.status }}">
-              {{ thesis.status|capitalize }}
-            </span>
+            <button class="toggle-description-btn">&#x2193;</button> <!-- Стрелка для раскрытия -->
+            <div class="thesis-description" style="display:none;">
+              <p>{{ thesis.abstract }}</p>
+            </div>
+            <span class="status {{ thesis.status }}">{{ thesis.status|capitalize }}</span>
+            
+            <!-- Редактирование и удаление -->
+            <div class="thesis-actions">
+              <button class="btn secondary edit-thesis-btn" data-id="{{ thesis.id }}" data-title="{{ thesis.title }}" data-abstract="{{ thesis.abstract }}">Редактировать</button>
+              <button class="btn danger delete-thesis-btn" data-id="{{ thesis.id }}">Удалить</button>
+            </div>
           </li>
         {% endfor %}
       </ul>
@@ -54,4 +60,21 @@
   </div>
 
 </section>
+
+<!-- Модальное окно для редактирования -->
+<div id="edit-thesis-modal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h2>Редактирование тезиса</h2>
+    <label for="edit-title">Название:</label>
+    <input type="text" id="edit-title" required>
+    <label for="edit-abstract">Аннотация:</label>
+    <textarea id="edit-abstract" rows="6" required></textarea>
+    <button id="save-thesis-btn" class="btn primary">Сохранить</button>
+    <button id="cancel-edit-btn" class="btn secondary">Отмена</button>
+  </div>
+</div>
+
+</section>
+
+<script src="/scripts/profile.js"></script>
 {% endblock %}

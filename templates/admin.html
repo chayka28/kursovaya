@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Админ — Заявки{% endblock %}
+
+{% block content %}
+<section class="admin-page">
+
+  <h1>📋 Заявки на конференцию</h1>
+
+  {% if applications %}
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Имя</th>
+        <th>Email</th>
+        <th>Роль</th>
+        <th>Статус</th>
+        <th>Дата</th>
+        <th>Действие</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for app in applications %}
+      <tr>
+        <td>{{ app.id }}</td>
+        <td>{{ app.full_name }}</td>
+        <td>{{ app.email }}</td>
+        <td>{{ app.role }}</td>
+        <td>
+          <span class="status {{ app.status }}">
+            {{ app.status }}
+          </span>
+        </td>
+        <td>{{ app.submitted_at.strftime("%d.%m.%Y %H:%M") }}</td>
+        <td>
+          {% if app.status == "pending" %}
+          <form method="post" action="/admin/application/{{ app.id }}/status" style="display:inline">
+            <input type="hidden" name="status" value="approved">
+            <button class="btn success">✔</button>
+          </form>
+          <form method="post" action="/admin/application/{{ app.id }}/status" style="display:inline">
+            <input type="hidden" name="status" value="rejected">
+            <button class="btn danger">✖</button>
+          </form>
+          {% else %}
+            —
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p>Заявок пока нет</p>
+  {% endif %}
+
+</section>
+{% endblock %}

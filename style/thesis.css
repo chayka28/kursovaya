@@ -27,3 +27,30 @@
   border: none;
   border-radius: 10px;
 }
+
+.notification {
+  padding: 10px 20px;
+  margin: 10px 0;
+  border-radius: 5px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.notification.success {
+  background-color: #d4edda;  /* Зеленый фон */
+  color: #155724;  /* Темно-зеленый текст */
+  border: 1px solid #c3e6cb;  /* Зеленая рамка */
+}
+
+.notification.error {
+  background-color: #f8d7da;  /* Красный фон */
+  color: #721c24;  /* Темно-красный текст */
+  border: 1px solid #f5c6cb;  /* Красная рамка */
+}
+
+.notification a {
+  color: #0069d9;  /* Синий для ссылок */
+  text-decoration: underline;
+}

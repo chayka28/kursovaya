@@ -92,4 +92,28 @@
     box-sizing: border-box;
 }
 
-/* Остальной CSS такой же, как у тебя был */
+/* уведомление */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 1rem 1.5rem;
+  border-radius: 5px;
+  color: #fff;
+  font-weight: bold;
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.notification.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.notification.info { background-color: #3498db; }
+.notification.success { background-color: #2ecc71; }
+.notification.warning { background-color: #f39c12; }
+.notification.error { background-color: #e74c3c; }

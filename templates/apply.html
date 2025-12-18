@@ -3,65 +3,67 @@
 {% block title %}Подача заявки{% endblock %}
 
 {% block content %}
+<div id="notification" class="notification"></div>
 
 <div class="apply-container">
 
-    {% if already_applied %}
+    {% if not user %}
         <div class="info-box">
-            <h2>✅ Заявка уже подана</h2>
-            <p>Отследить статус можно в <a href="/profile">профиле</a>.</p>
+            ❌ Требуется авторизация для подачи заявки.
+        </div>
+    {% elif already_applied %}
+        <div class="info-box">
+            ✅ Заявка уже подана. Отследить статус можно в <a href="/profile">профиле</a>.
         </div>
     {% else %}
+        <h1>Подача заявки на онлайн-конференцию</h1>
 
-    <h1>Подача заявки на онлайн-конференцию</h1>
-
-    <div class="role-switch">
-        <button type="button" class="role-btn active" data-role="listener">Слушатель</button>
-        <button type="button" class="role-btn" data-role="speaker">Спикер</button>
-    </div>
-
-    <form id="application-form" class="application-form">
-        <input type="hidden" name="role" value="listener">
-
-        <div class="form-block common-fields">
-            <label>ФИО
-                <input type="text" name="full_name" required>
-            </label>
-
-            <label>Email
-                <input type="email" name="email" required>
-            </label>
-
-            <label>Контакт (Telegram)
-                <input type="text" name="contact" required>
-            </label>
+        <div class="role-switch">
+            <button type="button" class="role-btn active" data-role="listener">Слушатель</button>
+            <button type="button" class="role-btn" data-role="speaker">Спикер</button>
         </div>
 
-        <div id="listener-fields" class="form-block role-fields">
-            <label>Интересующие темы
-                <textarea name="interests"></textarea>
-            </label>
-        </div>
+        <form id="application-form" class="application-form" data-logged-in="{{ 'true' if user else 'false' }}">
+            <input type="hidden" name="role" value="listener">
 
-        <div id="speaker-fields" class="form-block role-fields hidden">
-            <label>Тема доклада
-                <input type="text" name="title">
-            </label>
+            <div class="form-block common-fields">
+                <label>ФИО
+                    <input type="text" name="full_name" required>
+                </label>
+                <label>Email
+                    <input type="email" name="email" required>
+                </label>
+                <label>Контакт (Telegram)
+                    <input type="text" name="contact" required>
+                </label>
+            </div>
 
-            <label>Кратко о докладе
-                <textarea name="thesis"></textarea>
-            </label>
+            <div id="listener-fields" class="form-block role-fields">
+                <label>Интересующие темы
+                    <textarea name="interests"></textarea>
+                </label>
+            </div>
 
-            <label>Опыт выступлений
-                <textarea name="experience"></textarea>
-            </label>
-        </div>
+            <div id="speaker-fields" class="form-block role-fields hidden">
+                <label>Тема доклада
+                    <input type="text" name="title">
+                </label>
+                <label>Кратко о докладе
+                    <textarea name="thesis"></textarea>
+                </label>
+                <label>Опыт выступлений
+                    <textarea name="experience"></textarea>
+                </label>
+            </div>
 
-        <button type="submit" class="submit-btn">Отправить заявку</button>
-    </form>
-
+            <button type="submit" class="submit-btn">Отправить заявку</button>
+        </form>
     {% endif %}
-</div>
 
-<script src="/scripts/apply.js"></script>
+</div>  <!-- закрываем apply-container -->
+
+<script src="/scripts/apply.js">
+
+</script>
+
 {% endblock %}

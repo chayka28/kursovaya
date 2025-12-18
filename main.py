@@ -1,13 +1,11 @@
-# main.py
 import os
 import uuid
 import datetime
 from typing import Optional
 
 from fastapi import (
-    FastAPI, Request, Response, Depends, Form, HTTPException
+    FastAPI, Request, Response, Depends, Form, HTTPException, Body
 )
-from fastapi import Body
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -51,6 +49,7 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     fullname = Column(String, nullable=False)
     password_hash = Column(String, nullable=False)
+    is_admin = Column(Integer, default=0)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
     theses = relationship("Thesis", back_populates="author", cascade="all, delete")
@@ -82,7 +81,7 @@ class Thesis(Base):
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
     title = Column(String, nullable=False)
     abstract = Column(Text)
-    status = Column(String, default="submitted")   # submitted / accepted / rejected
+    status = Column(String, default="submitted")
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
     author = relationship("User", back_populates="theses")
@@ -90,19 +89,20 @@ class Thesis(Base):
 
 class Application(Base):
     __tablename__ = "applications"
+
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
-    role = Column(String, nullable=False)          # listener или speaker
+    role = Column(String, nullable=False)
     full_name = Column(String, nullable=False)
     email = Column(String, nullable=False)
-    contact = Column(String)                        # Telegram / контакт
-    title = Column(String)                          # для спикера
-    thesis = Column(Text)                           # для спикера
-    interests = Column(Text)                        # для слушателя
-    status = Column(String, default="pending")     # статус заявки
+    contact = Column(String)
+    title = Column(String)
+    thesis = Column(Text)
+    interests = Column(Text)
+    status = Column(String, default="pending")
     submitted_at = Column(DateTime, default=datetime.datetime.utcnow)
-    user = relationship("User", back_populates="applications")
 
+    user = relationship("User", back_populates="applications")
 
 
 Base.metadata.create_all(bind=engine)
@@ -111,7 +111,6 @@ Base.metadata.create_all(bind=engine)
 # FASTAPI APP
 # -------------------------------------------------
 app = FastAPI()
-
 templates = Jinja2Templates(directory="templates")
 
 app.mount("/style", StaticFiles(directory="style"), name="style")
@@ -150,8 +149,7 @@ def create_session(db: Session, user: User, remember: bool) -> str:
     ttl = datetime.timedelta(days=30) if remember else datetime.timedelta(hours=2)
     expires = datetime.datetime.utcnow() + ttl
 
-    s = SessionToken(token=token, user_id=user.id, expires_at=expires)
-    db.add(s)
+    db.add(SessionToken(token=token, user_id=user.id, expires_at=expires))
     db.commit()
     return token
 
@@ -166,6 +164,11 @@ def get_current_user(request: Request, db: Session) -> Optional[User]:
         return None
 
     return db.query(User).filter_by(id=s.user_id).first()
+
+
+def require_admin(user: User):
+    if not user or not user.is_admin:
+        raise HTTPException(403, "Access denied")
 
 # -------------------------------------------------
 # AUTH
@@ -229,84 +232,88 @@ async def logout(request: Request, db: Session = Depends(get_db)):
     return resp
 
 # -------------------------------------------------
-# PASSWORD RESET
-# -------------------------------------------------
-@app.post("/reset-password")
-async def reset_request(data: ResetRequest, db: Session = Depends(get_db)):
-    user = db.query(User).filter_by(email=data.email).first()
-    if not user:
-        return {"message": "Если email существует — ссылка отправлена"}
-
-    token = str(uuid.uuid4())
-    expires = datetime.datetime.utcnow() + datetime.timedelta(hours=1)
-
-    db.add(PasswordReset(token=token, user_id=user.id, expires_at=expires))
-    db.commit()
-
-    print("RESET LINK:", f"http://localhost:8000/reset-confirm?token={token}")
-    return {"message": "Если email существует — ссылка отправлена"}
-
-
-@app.get("/reset-confirm", response_class=HTMLResponse)
-async def reset_page(request: Request, token: str):
-    return templates.TemplateResponse("reset.html", {"request": request, "token": token})
-
-
-@app.post("/reset-confirm")
-async def reset_confirm(data: NewPassword, db: Session = Depends(get_db)):
-    r = db.query(PasswordReset).filter_by(token=data.token).first()
-    if not r or r.expires_at < datetime.datetime.utcnow():
-        raise HTTPException(400, "Неверный или просроченный токен")
-
-    user = db.query(User).filter_by(id=r.user_id).first()
-    user.password_hash = hash_password(data.new_password)
-
-    db.delete(r)
-    db.commit()
-    return {"message": "Пароль изменён"}
-
-# -------------------------------------------------
 # PAGES
 # -------------------------------------------------
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
-    return templates.TemplateResponse("index.html", {"request": request, "user": user})
+    return templates.TemplateResponse(
+        "index.html",
+        {"request": request, "user": user}
+    )
 
+
+@app.get("/about", response_class=HTMLResponse)
+async def about(request: Request, db: Session = Depends(get_db)):
+    user = get_current_user(request, db)
+    return templates.TemplateResponse(
+        "about.html",
+        {"request": request, "user": user}
+    )
+
+
+@app.get("/program", response_class=HTMLResponse)
+async def program(request: Request, db: Session = Depends(get_db)):
+    user = get_current_user(request, db)
+    return templates.TemplateResponse(
+        "program.html",
+        {"request": request, "user": user}
+    )
+
+
+@app.get("/contact", response_class=HTMLResponse)
+async def contact(request: Request, db: Session = Depends(get_db)):
+    user = get_current_user(request, db)
+    return templates.TemplateResponse(
+        "contact.html",
+        {"request": request, "user": user}
+    )
 
 @app.get("/apply", response_class=HTMLResponse)
-async def page_apply(request: Request, db: Session = Depends(get_db)):
+async def apply_page(request: Request, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
     already_applied = False
+    last_application = None
+
     if user:
-        existing = db.query(Application).filter_by(user_id=user.id).first()
-        already_applied = bool(existing)
+        last_application = db.query(Application).filter_by(user_id=user.id).order_by(Application.submitted_at.desc()).first()
+        already_applied = bool(last_application)
 
     return templates.TemplateResponse(
         "apply.html",
-        {"request": request, "user": user, "already_applied": already_applied}
+        {
+            "request": request,
+            "user": user,
+            "already_applied": already_applied,
+            "last_application": last_application
+        }
     )
-
 
 @app.get("/thesis", response_class=HTMLResponse)
 async def thesis_page(request: Request, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
-    if not user:
-        return RedirectResponse("/", 302)
-    return templates.TemplateResponse("thesis.html", {"request": request, "user": user})
 
+    if not user:
+        return templates.TemplateResponse(
+            "thesis.html",
+            {"request": request, "user": None, "message": "Требуется авторизация"}
+        )
+
+    thesis_count = db.query(Thesis).filter_by(user_id=user.id).count()
+
+    return templates.TemplateResponse(
+        "thesis.html",
+        {"request": request, "user": user, "thesis_count": thesis_count}
+    )
 
 @app.get("/profile", response_class=HTMLResponse)
-async def page_profile(request: Request, db: Session = Depends(get_db)):
+async def profile(request: Request, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
     if not user:
         return RedirectResponse("/", status_code=302)
 
     theses = db.query(Thesis).filter_by(user_id=user.id).all()
-    applications = db.query(Application).filter_by(user_id=user.id).all()
-
-    # Проверка на пустой список
-    last_application = applications[-1] if applications else None
+    last_application = db.query(Application).filter_by(user_id=user.id).order_by(Application.submitted_at.desc()).first()
 
     return templates.TemplateResponse(
         "profile.html",
@@ -314,81 +321,185 @@ async def page_profile(request: Request, db: Session = Depends(get_db)):
             "request": request,
             "user": user,
             "theses": theses,
-            "applications": applications,
             "last_application": last_application
         }
     )
 
+
+@app.get("/admin", response_class=HTMLResponse)
+async def admin_panel(request: Request, db: Session = Depends(get_db)):
+    user = get_current_user(request, db)
+
+    if not user or not user.is_admin:
+        raise HTTPException(status_code=403)
+
+    applications = db.query(Application).order_by(Application.submitted_at.desc()).all()
+    theses = db.query(Thesis).order_by(Thesis.created_at.desc()).all()
+
+    return templates.TemplateResponse(
+        "admin.html",
+        {
+            "request": request,
+            "user": user,
+            "applications": applications,
+            "theses": theses
+        }
+    )
+
 # -------------------------------------------------
-# FORMS
+# APPLICATION SUBMIT
 # -------------------------------------------------
+
 @app.post("/application/submit")
-async def submit_application(data: dict = Body(...), request: Request = None, db: Session = Depends(get_db)):
+async def submit_application(
+    request: Request,
+    data: dict = Body(...),
+    db: Session = Depends(get_db)
+):
     user = get_current_user(request, db)
     if not user:
-        return JSONResponse({"message": "Unauthorized"}, status_code=401)
+        return JSONResponse({"error": "auth_required"}, status_code=401)
 
-    # Проверяем, подал ли уже заявку
+    # ❗ ОГРАНИЧЕНИЕ: 1 заявка
     existing = db.query(Application).filter_by(user_id=user.id).first()
     if existing:
-        return JSONResponse({"message": "Вы уже подали заявку. Статус можно отследить в профиле."}, status_code=400)
+        return JSONResponse(
+            {"message": "Вы уже подали заявку"},
+            status_code=400
+        )
 
-    # Сохраняем заявку
-    a = Application(
+    app_obj = Application(
         user_id=user.id,
         role=data.get("role"),
         full_name=data.get("full_name"),
         email=data.get("email"),
         contact=data.get("contact"),
-        interests=data.get("interests") if data.get("role")=="listener" else None,
-        title=data.get("title") if data.get("role")=="speaker" else None,
-        thesis=data.get("thesis") if data.get("role")=="speaker" else None,
+        title=data.get("title"),
+        thesis=data.get("thesis"),
+        interests=data.get("interests"),
         status="pending"
     )
 
-    db.add(a)
+    db.add(app_obj)
     db.commit()
 
     return {"message": "Заявка успешно отправлена"}
 
 
+# -------------------------------------------------
+#  THESIS SUBMIT
+# -------------------------------------------------
+
 @app.post("/thesis/submit")
 async def submit_thesis(
-    title: str = Form(...),
-    abstract: str = Form(""),
-    request: Request = None,
-    db: Session = Depends(get_db),
+    request: Request,
+    data: dict = Body(...),
+    db: Session = Depends(get_db)
 ):
     user = get_current_user(request, db)
     if not user:
-        raise HTTPException(401)
+        return JSONResponse({"error": "auth_required"}, status_code=401)
+
+    # ❗ ОГРАНИЧЕНИЕ: максимум 5 тезисов
+    count = db.query(Thesis).filter_by(user_id=user.id).count()
+    if count >= 5:
+        return JSONResponse(
+            {"message": "Можно отправить не более 5 тезисов"},
+            status_code=400
+        )
 
     thesis = Thesis(
         user_id=user.id,
-        title=title,
-        abstract=abstract,
+        title=data.get("title"),
+        abstract=data.get("abstract"),
+        status="submitted"
     )
+
     db.add(thesis)
     db.commit()
-    return RedirectResponse("/profile", 302)
 
-@app.post("/apply")
-async def submit_application(data: dict = Body(...), request: Request = None, db: Session = Depends(get_db)):
+    return {"message": "Тезис успешно отправлен"}
+
+# -------------------------------------------------
+#  THESIS EDIT
+# -------------------------------------------------
+
+@app.get("/thesis/edit/{thesis_id}", response_class=HTMLResponse)
+async def edit_thesis_page(request: Request, thesis_id: int, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
     if not user:
-        return JSONResponse({"message": "Unauthorized"}, status_code=401)
+        raise HTTPException(status_code=401, detail="Необходимо авторизоваться")
 
-    # Проверяем, есть ли уже заявка
-    existing = db.query(Application).filter_by(user_id=user.id).first()
-    if existing:
-        return JSONResponse({"message": "Заявка уже подана"}, status_code=400)
+    thesis = db.query(Thesis).filter_by(id=thesis_id, user_id=user.id).first()
+    if not thesis:
+        raise HTTPException(status_code=404, detail="Тезис не найден")
 
-    a = Application(
-        user_id=user.id,
-        title=f"{user.fullname} ({data.get('role')})",
-        status="pending"
-    )
-    db.add(a)
+    return templates.TemplateResponse("edit_thesis.html", {"request": request, "thesis": thesis})
+
+@app.post("/thesis/edit/{thesis_id}")
+async def edit_thesis(
+    thesis_id: int,
+    title: str = Body(...),
+    abstract: str = Body(...),
+    db: Session = Depends(get_db)
+):
+    thesis = db.query(Thesis).filter_by(id=thesis_id).first()
+    if not thesis:
+        raise HTTPException(status_code=404, detail="Тезис не найден")
+
+    thesis.title = title
+    thesis.abstract = abstract
     db.commit()
 
-    return JSONResponse({"message": "Заявка успешно отправлена"})
+    return {"message": "Тезис успешно обновлен"}
+
+@app.post("/thesis/delete/{thesis_id}")
+async def delete_thesis(thesis_id: int, db: Session = Depends(get_db)):
+    thesis = db.query(Thesis).filter_by(id=thesis_id).first()
+    if not thesis:
+        raise HTTPException(status_code=404, detail="Тезис не найден")
+
+    db.delete(thesis)
+    db.commit()
+
+    return {"message": "Тезис успешно удален"}
+
+
+# -------------------------------------------------
+# ADMIN PANEL
+# -------------------------------------------------
+@app.get("/admin", response_class=HTMLResponse)
+async def admin_panel(request: Request, db: Session = Depends(get_db)):
+    user = get_current_user(request, db)
+    if not user or not user.is_admin:
+        raise HTTPException(status_code=403)
+
+    applications = db.query(Application).order_by(Application.submitted_at.desc()).all()
+    theses = db.query(Thesis).order_by(Thesis.created_at.desc()).all()
+    return templates.TemplateResponse(
+        "admin.html",
+        {"request": request, "user": user, "applications": applications, "theses": theses}
+    )
+
+@app.post("/admin/application/{app_id}/approve")
+async def approve_application(app_id: int, request: Request, db: Session = Depends(get_db)):
+    user = get_current_user(request, db)
+    require_admin(user)
+    app_obj = db.query(Application).filter_by(id=app_id).first()
+    if not app_obj:
+        raise HTTPException(404)
+    app_obj.status = "approved"
+    db.commit()
+    return {"message": "Заявка одобрена"}
+
+@app.post("/admin/application/{app_id}/reject")
+async def reject_application(app_id: int, request: Request, db: Session = Depends(get_db)):
+    user = get_current_user(request, db)
+    require_admin(user)
+    app_obj = db.query(Application).filter_by(id=app_id).first()
+    if not app_obj:
+        raise HTTPException(404)
+    app_obj.status = "rejected"
+    db.commit()
+    return {"message": "Заявка отклонена"}
+

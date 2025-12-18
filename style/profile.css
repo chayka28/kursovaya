@@ -54,33 +54,80 @@
 }
 
 /* ===== THESES ===== */
-
-.thesis-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
 .thesis-item {
   border-left: 4px solid #4e73df;
   padding: 12px 16px;
   margin-bottom: 14px;
   background: #f9fafc;
   border-radius: 6px;
+  position: relative;
 }
 
-.thesis-item h4 {
-  margin: 0 0 6px 0;
+.toggle-description-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: #4e73df;
+  cursor: pointer;
 }
 
-.thesis-item p {
-  margin: 0 0 8px 0;
+.thesis-description {
+  margin-top: 10px;
   font-size: 14px;
+  display: none;
 }
 
-.empty {
-  font-size: 14px;
-  color: #888;
+.thesis-actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.btn.danger {
+  background: #dc3545;
+  color: white;
+}
+
+.thesis-item.open .thesis-description {
+  display: block;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: auto;
+    opacity: 1;
+  }
+}
+
+/* ===== MODAL ===== */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 6px;
+  width: 400px;
+}
+
+.modal button {
+  margin-top: 10px;
+  padding: 10px 20px;
 }
 
 /* ===== ACTIONS ===== */
