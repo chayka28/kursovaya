@@ -21,7 +21,7 @@
     </thead>
     <tbody>
       {% for app in applications %}
-      <tr>
+      <tr id="application-{{ app.id }}">
         <td>{{ app.id }}</td>
         <td>{{ app.full_name }}</td>
         <td>{{ app.email }}</td>
@@ -34,14 +34,10 @@
         <td>{{ app.submitted_at.strftime("%d.%m.%Y %H:%M") }}</td>
         <td>
           {% if app.status == "pending" %}
-          <form method="post" action="/admin/application/{{ app.id }}/status" style="display:inline">
-            <input type="hidden" name="status" value="approved">
-            <button class="btn success">✔</button>
-          </form>
-          <form method="post" action="/admin/application/{{ app.id }}/status" style="display:inline">
-            <input type="hidden" name="status" value="rejected">
-            <button class="btn danger">✖</button>
-          </form>
+          <!-- Кнопка для подтверждения -->
+          <button class="btn success approve-btn" data-id="{{ app.id }}">✔</button>
+          <!-- Кнопка для отклонения -->
+          <button class="btn danger reject-btn" data-id="{{ app.id }}">✖</button>
           {% else %}
             —
           {% endif %}
@@ -55,4 +51,9 @@
   {% endif %}
 
 </section>
+<script src="/scripts/admin.js">
+
+</script>
+
 {% endblock %}
+

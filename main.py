@@ -465,6 +465,7 @@ async def delete_thesis(thesis_id: int, db: Session = Depends(get_db)):
     return {"message": "Тезис успешно удален"}
 
 
+
 # -------------------------------------------------
 # ADMIN PANEL
 # -------------------------------------------------
@@ -485,21 +486,58 @@ async def admin_panel(request: Request, db: Session = Depends(get_db)):
 async def approve_application(app_id: int, request: Request, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
     require_admin(user)
+
     app_obj = db.query(Application).filter_by(id=app_id).first()
     if not app_obj:
-        raise HTTPException(404)
+        raise HTTPException(404, detail="Заявка не найдена")
+
     app_obj.status = "approved"
     db.commit()
-    return {"message": "Заявка одобрена"}
+    return JSONResponse({"message": "Заявка одобрена"}, status_code=200)
+
 
 @app.post("/admin/application/{app_id}/reject")
 async def reject_application(app_id: int, request: Request, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
     require_admin(user)
+    
     app_obj = db.query(Application).filter_by(id=app_id).first()
     if not app_obj:
-        raise HTTPException(404)
+        raise HTTPException(404, detail="Заявка не найдена")
+
     app_obj.status = "rejected"
     db.commit()
     return {"message": "Заявка отклонена"}
+
+@app.post("/admin/application/{application_id}/status")
+async def update_application_status(
+    application_id: int,
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    user = get_current_user(request, db)
+    require_admin(user)
+    
+    # Получаем данные из тела запроса
+    data = await request.json()
+    new_status = data.get("status")
+    
+    if not new_status:
+        raise HTTPException(400, detail="Статус не указан")
+    
+    # Проверяем допустимые статусы
+    allowed_statuses = ["pending", "approved", "rejected"]
+    if new_status not in allowed_statuses:
+        raise HTTPException(400, detail=f"Недопустимый статус. Допустимые: {allowed_statuses}")
+    
+    # Находим и обновляем заявку
+    application = db.query(Application).filter_by(id=application_id).first()
+    if not application:
+        raise HTTPException(404, detail="Заявка не найдена")
+    
+    application.status = new_status
+    db.commit()
+    
+    return {"message": f"Статус заявки обновлен на '{new_status}'"}
+
 

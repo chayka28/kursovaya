@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll('.toggle-description-btn').forEach(button => {
     button.addEventListener('click', (e) => {
       const thesisItem = e.target.closest('.thesis-item');
-      thesisItem.classList.toggle('open'); // Переключаем класс, чтобы анимация сработала
+      thesisItem.classList.toggle('open');
     });
   });
 
@@ -11,19 +11,24 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll('.edit-thesis-btn').forEach(button => {
     button.addEventListener('click', (e) => {
       const thesisId = e.target.getAttribute('data-id');
-      const title = e.target.getAttribute('data-title');
-      const abstract = e.target.getAttribute('data-abstract');
+      const originalTitle = e.target.getAttribute('data-title');
+      const originalAbstract = e.target.getAttribute('data-abstract');
       
-      document.getElementById('edit-title').value = title;
-      document.getElementById('edit-abstract').value = abstract;
+      document.getElementById('edit-title').value = originalTitle;
+      document.getElementById('edit-abstract').value = originalAbstract;
       
       const modal = document.getElementById('edit-thesis-modal');
       modal.style.display = 'block';
 
-      // Обработчик для сохранения изменений
       document.getElementById('save-thesis-btn').onclick = async () => {
         const updatedTitle = document.getElementById('edit-title').value;
         const updatedAbstract = document.getElementById('edit-abstract').value;
+
+        // Если данные не изменились
+        if (updatedTitle === originalTitle && updatedAbstract === originalAbstract) {
+          alert('Вы не изменили данные');
+          return;
+        }
 
         const response = await fetch(`/thesis/edit/${thesisId}`, {
           method: 'POST',
@@ -38,13 +43,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const result = await response.json();
         if (response.ok) {
-          location.reload();  // Обновляем страницу, чтобы отобразить изменения
+          location.reload();  // Обновляем страницу
         } else {
           alert(result.detail || 'Ошибка при редактировании тезиса');
         }
       };
 
-      // Закрытие модального окна
       document.getElementById('cancel-edit-btn').onclick = () => {
         modal.style.display = 'none';
       };
@@ -53,19 +57,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Удаление тезиса
   document.querySelectorAll('.delete-thesis-btn').forEach(button => {
-    button.addEventListener('click', async (e) => {
+    button.addEventListener('click', (e) => {
       const thesisId = e.target.getAttribute('data-id');
+      
+      const modal = document.getElementById('confirm-delete-modal');
+      modal.style.display = 'block';
 
-      const response = await fetch(`/thesis/delete/${thesisId}`, {
-        method: 'POST'
-      });
+      document.getElementById('confirm-delete').onclick = async () => {
+        const response = await fetch(`/thesis/delete/${thesisId}`, {
+          method: 'POST'
+        });
 
-      const result = await response.json();
-      if (response.ok) {
-        document.getElementById(`thesis-${thesisId}`).remove();  // Удаляем тезис из DOM
-      } else {
-        alert(result.detail || 'Ошибка при удалении тезиса');
-      }
+        const result = await response.json();
+        if (response.ok) {
+          document.getElementById(`thesis-${thesisId}`).remove();  // Удаляем тезис из DOM
+          modal.style.display = 'none';  // Закрываем модалку
+        } else {
+          alert(result.detail || 'Ошибка при удалении тезиса');
+        }
+      };
+
+      document.getElementById('cancel-delete').onclick = () => {
+        modal.style.display = 'none';
+      };
     });
   });
 });

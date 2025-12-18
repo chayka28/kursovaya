@@ -1,5 +1,6 @@
+/* ===== PROFILE PAGE ===== */
 .profile-page {
-  max-width: 900px;
+  max-width: 1000px;
   margin: 40px auto;
   padding: 20px;
   display: grid;
@@ -11,20 +12,22 @@
   border-radius: 14px;
   padding: 20px 24px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  border: 1px solid #e0e0e0;
 }
 
 .profile-card h2 {
   margin-bottom: 14px;
-  font-size: 20px;
+  font-size: 22px;
+  color: #333;
 }
 
 .profile-card p {
   margin: 6px 0;
   font-size: 15px;
+  color: #555;
 }
 
 /* ===== STATUS BADGES ===== */
-
 .status {
   display: inline-block;
   padding: 6px 14px;
@@ -54,38 +57,38 @@
 }
 
 /* ===== THESES ===== */
+.thesis-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
 .thesis-item {
   border-left: 4px solid #4e73df;
-  padding: 12px 16px;
+  padding: 16px;
   margin-bottom: 14px;
   background: #f9fafc;
   border-radius: 6px;
   position: relative;
 }
 
-.toggle-description-btn {
+.thesis-item h4 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.thesis-item .toggle-description-btn {
   background: none;
   border: none;
-  font-size: 16px;
+  font-size: 18px;
   color: #4e73df;
   cursor: pointer;
 }
 
-.thesis-description {
+.thesis-item .thesis-description {
+  display: none;
   margin-top: 10px;
   font-size: 14px;
-  display: none;
-}
-
-.thesis-actions {
-  margin-top: 10px;
-  display: flex;
-  gap: 10px;
-}
-
-.btn.danger {
-  background: #dc3545;
-  color: white;
 }
 
 .thesis-item.open .thesis-description {
@@ -102,6 +105,29 @@
     height: auto;
     opacity: 1;
   }
+}
+
+.thesis-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn.secondary {
+  background: #e9ecf5;
+  color: #4e73df;
+}
+
+.btn.danger {
+  background: #dc3545;
+  color: white;
+}
+
+.btn {
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
 }
 
 /* ===== MODAL ===== */
@@ -123,26 +149,21 @@
   padding: 20px;
   border-radius: 6px;
   width: 400px;
+  text-align: center;
 }
 
 .modal button {
   margin-top: 10px;
   padding: 10px 20px;
+  width: 100px;
+  border-radius: 6px;
 }
 
-/* ===== ACTIONS ===== */
-
+/* ===== PROFILE ACTION BUTTONS ===== */
 .profile-actions {
   display: flex;
   gap: 14px;
-}
-
-.btn {
-  padding: 12px 20px;
-  border-radius: 10px;
-  font-weight: 500;
-  text-decoration: none;
-  display: inline-block;
+  justify-content: center;
 }
 
 .btn.primary {

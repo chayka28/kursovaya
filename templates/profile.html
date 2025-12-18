@@ -74,7 +74,14 @@
   </div>
 </div>
 
-</section>
-
+<!-- Модальное окно для подтверждения удаления -->
+<div id="confirm-delete-modal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h2>Подтверждение удаления</h2>
+    <p>Вы уверены, что хотите удалить этот тезис?</p>
+    <button id="confirm-delete" class="btn danger">Удалить</button>
+    <button id="cancel-delete" class="btn secondary">Отмена</button>
+  </div>
+</div>
 <script src="/scripts/profile.js"></script>
 {% endblock %}
