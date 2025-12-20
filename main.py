@@ -2,7 +2,12 @@ import os
 import uuid
 import datetime
 from typing import Optional
-
+from fastapi.responses import FileResponse
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.cidfonts import UnicodeCIDFont
+from reportlab.lib.pagesizes import A4
 from fastapi import (
     FastAPI, Request, Response, Depends, Form, HTTPException, Body
 )
@@ -86,6 +91,14 @@ class Thesis(Base):
 
     author = relationship("User", back_populates="theses")
 
+class ContactMessage(Base):
+    __tablename__ = "contact_messages"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
+    email = Column(String, nullable=False)
+    message = Column(Text, nullable=False)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
 class Application(Base):
     __tablename__ = "applications"
@@ -260,7 +273,6 @@ async def program(request: Request, db: Session = Depends(get_db)):
         {"request": request, "user": user}
     )
 
-
 @app.get("/contact", response_class=HTMLResponse)
 async def contact(request: Request, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
@@ -294,9 +306,10 @@ async def thesis_page(request: Request, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
 
     if not user:
+        # Передаем None для неавторизованных пользователей
         return templates.TemplateResponse(
             "thesis.html",
-            {"request": request, "user": None, "message": "Требуется авторизация"}
+            {"request": request, "user": None, "message": "Требуется авторизация для подачи заявки", "thesis_count": 0}
         )
 
     thesis_count = db.query(Thesis).filter_by(user_id=user.id).count()
@@ -400,7 +413,7 @@ async def submit_thesis(
     if not user:
         return JSONResponse({"error": "auth_required"}, status_code=401)
 
-    # ❗ ОГРАНИЧЕНИЕ: максимум 5 тезисов
+    # Логика подачи тезиса
     count = db.query(Thesis).filter_by(user_id=user.id).count()
     if count >= 5:
         return JSONResponse(
@@ -419,6 +432,7 @@ async def submit_thesis(
     db.commit()
 
     return {"message": "Тезис успешно отправлен"}
+
 
 # -------------------------------------------------
 #  THESIS EDIT
@@ -541,3 +555,99 @@ async def update_application_status(
     return {"message": f"Статус заявки обновлен на '{new_status}'"}
 
 
+# -------------------------------------------------
+# PDF DOWNLOADER
+# -------------------------------------------------
+
+@app.get("/download/program-pdf")
+async def download_pdf():
+    static_dir = "static"
+    filename = "program.pdf"
+    filepath = os.path.join(static_dir, filename)
+
+    if not os.path.exists(static_dir):
+        os.makedirs(static_dir)
+
+    # 🔹 Регистрируем Unicode-шрифт (ОБЯЗАТЕЛЬНО для кириллицы)
+    pdfmetrics.registerFont(UnicodeCIDFont("HeiseiMin-W3"))
+
+    doc = SimpleDocTemplate(
+        filepath,
+        pagesize=A4,
+        rightMargin=40,
+        leftMargin=40,
+        topMargin=40,
+        bottomMargin=40
+    )
+
+    styles = getSampleStyleSheet()
+    styles["Normal"].fontName = "HeiseiMin-W3"
+    styles["Title"].fontName = "HeiseiMin-W3"
+    styles["Heading2"].fontName = "HeiseiMin-W3"
+
+    content = []
+
+    # Заголовок
+    content.append(Paragraph("<b>Программа конференции CodeFuture 2025</b>", styles["Title"]))
+    content.append(Spacer(1, 20))
+
+    content.append(Paragraph("📅 <b>Даты проведения:</b> 10–12 мая 2025 г.", styles["Normal"]))
+    content.append(Spacer(1, 20))
+
+    # День 1
+    content.append(Paragraph("<b>День 1 — 10 мая</b>", styles["Heading2"]))
+    content.append(Spacer(1, 10))
+    content.append(Paragraph("10:00 — Открытие конференции (Zoom Hall 1)", styles["Normal"]))
+    content.append(Paragraph("11:00 — Доклады секции «Web-технологии»", styles["Normal"]))
+    content.append(Paragraph("13:00 — Перерыв", styles["Normal"]))
+    content.append(Paragraph("14:00 — Доклады секции «AI и машинное обучение»", styles["Normal"]))
+    content.append(Paragraph("17:00 — Круглый стол «IT-тренды 2025»", styles["Normal"]))
+    content.append(Spacer(1, 20))
+
+    # День 2
+    content.append(Paragraph("<b>День 2 — 11 мая</b>", styles["Heading2"]))
+    content.append(Spacer(1, 10))
+    content.append(Paragraph("10:00 — Кибербезопасность и защита данных", styles["Normal"]))
+    content.append(Paragraph("12:00 — DevOps и облачные технологии", styles["Normal"]))
+    content.append(Paragraph("14:00 — Практические кейсы индустрии", styles["Normal"]))
+    content.append(Spacer(1, 20))
+
+    # День 3
+    content.append(Paragraph("<b>День 3 — 12 мая</b>", styles["Heading2"]))
+    content.append(Spacer(1, 10))
+    content.append(Paragraph("11:00 — Панельная дискуссия", styles["Normal"]))
+    content.append(Paragraph("13:00 — Подведение итогов и закрытие", styles["Normal"]))
+
+    doc.build(content)
+
+    return FileResponse(
+        filepath,
+        media_type="application/pdf",
+        filename="CodeFuture_2025_Program.pdf"
+    )
+
+# -------------------------------------------------
+#  CONTACTS SUBMIT
+# -------------------------------------------------
+
+@app.post("/contact/submit")
+async def submit_contact(
+    data: dict = Body(...),
+    db: Session = Depends(get_db)
+):
+    if not data.get("name") or not data.get("email") or not data.get("message"):
+        return JSONResponse(
+            {"message": "Заполните все поля"},
+            status_code=400
+        )
+
+    msg = ContactMessage(
+        name=data["name"],
+        email=data["email"],
+        message=data["message"]
+    )
+
+    db.add(msg)
+    db.commit()
+
+    return {"message": "Сообщение отправлено"}

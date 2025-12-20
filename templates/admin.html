@@ -1,59 +1,135 @@
 {% extends "base.html" %}
-{% block title %}Админ — Заявки{% endblock %}
+{% block title %}Админ — Панель{% endblock %}
 
 {% block content %}
 <section class="admin-page">
 
-  <h1>📋 Заявки на конференцию</h1>
+  <h1>🛠 Панель администратора</h1>
 
-  {% if applications %}
-  <table class="admin-table">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Имя</th>
-        <th>Email</th>
-        <th>Роль</th>
-        <th>Статус</th>
-        <th>Дата</th>
-        <th>Действие</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for app in applications %}
-      <tr id="application-{{ app.id }}">
-        <td>{{ app.id }}</td>
-        <td>{{ app.full_name }}</td>
-        <td>{{ app.email }}</td>
-        <td>{{ app.role }}</td>
-        <td>
-          <span class="status {{ app.status }}">
-            {{ app.status }}
-          </span>
-        </td>
-        <td>{{ app.submitted_at.strftime("%d.%m.%Y %H:%M") }}</td>
-        <td>
-          {% if app.status == "pending" %}
-          <!-- Кнопка для подтверждения -->
-          <button class="btn success approve-btn" data-id="{{ app.id }}">✔</button>
-          <!-- Кнопка для отклонения -->
-          <button class="btn danger reject-btn" data-id="{{ app.id }}">✖</button>
-          {% else %}
-            —
-          {% endif %}
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  {% else %}
-    <p>Заявок пока нет</p>
-  {% endif %}
+  <!-- Вкладки -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="applications">Заявки</button>
+    <button class="tab-btn" data-tab="theses">Тезисы</button>
+    <button class="tab-btn" data-tab="messages">Сообщения</button>
+  </div>
+
+  <!-- Вкладка: Заявки -->
+  <div class="tab-content" id="applications">
+    {% if applications %}
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Имя</th>
+          <th>Email</th>
+          <th>Роль</th>
+          <th>Статус</th>
+          <th>Дата</th>
+          <th>Действие</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for app in applications %}
+        <tr id="application-{{ app.id }}">
+          <td>{{ app.id }}</td>
+          <td>{{ app.full_name }}</td>
+          <td>{{ app.email }}</td>
+          <td>{{ app.role }}</td>
+          <td><span class="status {{ app.status }}">{{ app.status }}</span></td>
+          <td>{{ app.submitted_at.strftime("%d.%m.%Y %H:%M") }}</td>
+          <td>
+            {% if app.status == "pending" %}
+            <button class="btn success approve-btn" data-id="{{ app.id }}">✔</button>
+            <button class="btn danger reject-btn" data-id="{{ app.id }}">✖</button>
+            {% else %}—{% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+      <p>Заявок пока нет</p>
+    {% endif %}
+  </div>
+
+  <!-- Вкладка: Тезисы -->
+  <div class="tab-content" id="theses" style="display:none;">
+    {% if theses %}
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Автор</th>
+          <th>Заголовок</th>
+          <th>Статус</th>
+          <th>Дата</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for t in theses %}
+        <tr>
+          <td>{{ t.id }}</td>
+          <td>{{ t.author.fullname }}</td>
+          <td>{{ t.title }}</td>
+          <td>{{ t.status }}</td>
+          <td>{{ t.created_at.strftime("%d.%m.%Y %H:%M") }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+      <p>Тезисов пока нет</p>
+    {% endif %}
+  </div>
+
+  <!-- Вкладка: Сообщения -->
+  <div class="tab-content" id="messages" style="display:none;">
+    {% if messages %}
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Имя</th>
+          <th>Email</th>
+          <th>Сообщение</th>
+          <th>Дата</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for msg in messages %}
+        <tr>
+          <td>{{ msg.id }}</td>
+          <td>{{ msg.name }}</td>
+          <td>{{ msg.email }}</td>
+          <td>{{ msg.message }}</td>
+          <td>{{ msg.created_at.strftime("%d.%m.%Y %H:%M") }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+      <p>Сообщений нет</p>
+    {% endif %}
+  </div>
 
 </section>
-<script src="/scripts/admin.js">
 
+<!-- Скрипт для переключения вкладок -->
+<script>
+const tabs = document.querySelectorAll(".tab-btn");
+const contents = document.querySelectorAll(".tab-content");
+
+tabs.forEach(tab => {
+  tab.addEventListener("click", () => {
+    tabs.forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+
+    const target = tab.dataset.tab;
+    contents.forEach(c => c.style.display = c.id === target ? "block" : "none");
+  });
+});
 </script>
 
+<!-- Скрипт для кнопок Заявок -->
+<script src="/scripts/admin.js"></script>
 {% endblock %}
-

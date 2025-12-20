@@ -1,0 +1,136 @@
+/* === Общие стили страницы админки === */
+.admin-page {
+    padding: 30px;
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+    min-height: 100vh;
+}
+
+.admin-page h1 {
+    margin-bottom: 20px;
+    font-size: 28px;
+    color: #333;
+}
+
+/* === Вкладки === */
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    background-color: #e0e0e0;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px 5px 0 0;
+    transition: background-color 0.3s;
+}
+
+.tab-btn.active {
+    background-color: #ffffff;
+    font-weight: bold;
+    border-bottom: 2px solid #ffffff;
+}
+
+.tab-btn:hover {
+    background-color: #d5d5d5;
+}
+
+/* === Содержимое вкладок === */
+.tab-content {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 0 5px 5px 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* === Таблицы === */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.admin-table th, .admin-table td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    text-align: left;
+    font-size: 14px;
+}
+
+.admin-table th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+}
+
+.admin-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* === Статусы заявок === */
+.status {
+    padding: 5px 10px;
+    border-radius: 4px;
+    color: #fff;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.status.pending {
+    background-color: #f0ad4e;
+}
+
+.status.approved {
+    background-color: #5cb85c;
+}
+
+.status.rejected {
+    background-color: #d9534f;
+}
+
+/* === Кнопки действий === */
+.btn {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #fff;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.btn.success {
+    background-color: #5cb85c;
+}
+
+.btn.success:hover {
+    background-color: #4cae4c;
+}
+
+.btn.danger {
+    background-color: #d9534f;
+}
+
+.btn.danger:hover {
+    background-color: #c9302c;
+}
+
+/* === Мобильная адаптивность === */
+@media (max-width: 768px) {
+    .tabs {
+        flex-direction: column;
+    }
+
+    .tab-btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .admin-table th, .admin-table td {
+        font-size: 12px;
+        padding: 8px 10px;
+    }
+}

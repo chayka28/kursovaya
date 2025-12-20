@@ -1,8 +1,38 @@
 {% extends "base.html" %}
-
-{% block title %}Главная{% endblock %}
+{% block title %}Контакты{% endblock %}
 
 {% block content %}
-<h1>Главная страница</h1>
-<p>Контент главной страницы</p>
+<link rel="stylesheet" href="/style/contact.css">
+<section id="contact" class="section contact-sec">
+  <h2 class="section-title">Контакты оргкомитета</h2>
+
+  <div class="contact-container">
+    <div class="contact-info">
+      <p><b>Email:</b> info@codefutureconf.ru</p>
+      <p><b>Telegram:</b> <a href="https://t.me/CodeFuture2025" target="_blank">@CodeFuture2025</a></p>
+      <div id="map" class="contact-map"></div>
+    </div>
+
+    <div class="contact-form-container">
+      <form id="contact-form">
+        <label for="name">Имя</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="message">Сообщение</label>
+        <textarea id="message" name="message" rows="5" required></textarea>
+
+        <button type="submit" class="btn submit-btn">Отправить</button>
+      </form>
+
+      <div id="notification" class="notification"></div>
+    </div>
+  </div>
+</section>
+
+<script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+<script src="/scripts/contact.js"></script>
+
 {% endblock %}

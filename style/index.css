@@ -1,269 +1,395 @@
-* {
-  margin:0; padding:0; box-sizing:border-box;
-  font-family:'Inter', 'Segoe UI', sans-serif;
-}
-
+/* Global Styles */
 body {
-  background:#f8f8f8;
-  padding-top:90px;
+  font-family: 'Open Sans', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #f9f9f9;
 }
 
-/* HEADER */
-header {
-  position:fixed; top:0; left:0; width:100%;
-  background:#fff;
-  box-shadow:0 2px 10px rgba(0,0,0,0.1);
-  z-index:1000;
+/* Hero Section */
+.hero {
+  position: relative;
+  background: linear-gradient(to right, #001f3d, #003f63); /* Deep blue gradient */
+  height: 120vh; /* Увеличиваем высоту шапки */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-align: center;
+  padding: 0 40px; /* Увеличиваем отступы по бокам */
 }
 
-.header-container {
-  max-width:1200px;
-  margin:0 auto;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:15px 25px;
-}
-
-/* ЛОГО */
-.logo img {
-  height:50px;
-  opacity:0;
-  transform:translateY(-10px);
-  animation:logoFade 0.7s forwards;
-}
-@keyframes logoFade {
-  to { opacity:1; transform:translateY(0); }
-}
-
-/* МЕНЮ */
-nav ul.menu {
-  display:flex;
-  list-style:none;
-  align-items:center;
-  gap:35px;
-}
-nav ul.menu li {
-  position:relative;
-}
-nav ul.menu li a {
-  text-decoration:none;
-  color:#1c1c1c;
-  font-weight:600;
-  transition:color 0.3s;
-  padding:8px 0;
-}
-nav ul.menu li a:hover {
-  color:#0078d4;
-}
-.arrow {
-  font-size:0.7em;
-  margin-left:4px;
-  transition:transform 0.3s;
-}
-.dropdown:hover .arrow {
-  transform:rotate(180deg);
-}
-
-/* ВЫПАДАЮЩЕЕ МЕНЮ */
-.dropdown-menu {
-  display:none;
-  position:absolute;
-  top:100%;
-  left:0;
-  background:#fff;
-  box-shadow:0 8px 20px rgba(0,0,0,0.1);
-  border-radius:10px;
-  margin-top:10px;
-  min-width:180px;
-  overflow:hidden;
-}
-.dropdown:hover .dropdown-menu {
-  display:block;
-}
-.dropdown-menu li a {
-  display:block;
-  padding:12px 18px;
-  color:#1c1c1c;
-  font-weight:500;
-  text-decoration:none;
-  transition:background 0.2s, color 0.2s;
-}
-.dropdown-menu li a:hover {
-  background:#f5f5f5;
-  color:#0078d4;
-}
-
-/* ВХОД / РЕГИСТРАЦИЯ */
-.auth-block {
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-.auth-link {
-  color:#1c1c1c;
-  text-decoration:none;
-  font-weight:600;
-  font-size:14px;
-  transition:color 0.3s;
-}
-.auth-link:hover {
-  color:#0078d4;
-}
-.divider {
-  width:1px;
-  height:20px;
-  background:#ccc;
-}
-
-/* МОДАЛКИ */
-.modal {
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.6);
-  justify-content:center;
-  align-items:center;
-  z-index:2000;
-  backdrop-filter:blur(4px);
-}
-.modal-content {
-  background:#fff;
-  border-radius:14px;
-  padding:30px 25px;
-  width:90%;
-  max-width:400px;
-  box-shadow:0 8px 25px rgba(0,0,0,0.2);
-  animation:fadeIn 0.3s ease;
-  position:relative;
-}
-@keyframes fadeIn {
-  from {opacity:0; transform:scale(0.95);}
-  to {opacity:1; transform:scale(1);}
-}
-.modal-content .close {
-  position:absolute;
-  top:12px; right:16px;
-  font-size:22px; cursor:pointer;
-  color:#888;
-  transition:color 0.2s;
-}
-.modal-content .close:hover {
-  color:#000;
-}
-.modal-content h2 {
-  margin-bottom:20px;
-  text-align:center;
-  font-weight:600;
-  color:#1c1c1c;
-}
-.modal-content form {
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-}
-.modal-content input {
-  padding:12px;
-  border:1px solid #ccc;
-  border-radius:8px;
-  font-size:15px;
-  transition:border-color 0.2s, box-shadow 0.2s;
-}
-.modal-content input:focus {
-  border-color:#0078d4;
-  outline:none;
-  box-shadow:0 0 0 2px rgba(0,120,212,0.2);
-}
-.modal-content button {
-  padding:12px;
-  border:none;
-  border-radius:8px;
-  background:#0078d4;
-  color:#fff;
-  font-weight:600;
-  font-size:15px;
-  cursor:pointer;
-  transition:background 0.3s;
-}
-.modal-content button:hover {
-  background:#005ea3;
-}
-.link {
-  display:block;
-  text-align:right;
-  margin-top:10px;
-  color:#0078d4;
-  font-size:14px;
-  text-decoration:none;
-  transition:color 0.3s;
-}
-.link:hover {
-  color:#005ea3;
-}
-
-/* --- СТИЛЬ ДЛЯ "ЗАПОМНИТЬ МЕНЯ" --- */
-.remember-me {
+.hero-content {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  color: #333;
-  cursor: pointer;
-  user-select: none;
-  margin-top: 4px;
+  justify-content: space-between;
+  max-width: 1400px; /* Увеличиваем максимальную ширину контента */
+  padding: 50px; /* Увеличиваем отступы внутри шапки */
+  z-index: 2;
+  flex-wrap: wrap;
 }
 
-/* Скрываем стандартный checkbox */
-.remember-me input[type="checkbox"] {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 18px;
-  height: 18px;
-  border: 2px solid #0078d4;
-  border-radius: 5px;
-  position: relative;
-  cursor: pointer;
-  transition: all 0.2s ease;
+.hero-logo {
+  width: 200px; /* Увеличиваем размер логотипа */
+  height: auto; /* Сохраняем пропорции изображения */
+  margin-bottom: 30px; /* Увеличиваем отступ снизу */
+  border-radius: 20px; /* Скругляем углы логотипа */
 }
 
-/* Анимация при наведении */
-.remember-me input[type="checkbox"]:hover {
-  box-shadow: 0 0 0 3px rgba(0,120,212,0.15);
+.hero-left {
+  flex: 1;
 }
 
-/* Галочка при активном состоянии */
-.remember-me input[type="checkbox"]::after {
-  content: '';
+.hero-right {
+  flex: 2;
+  text-align: center;
+}
+
+.hero-title {
+  font-size: 5rem; /* Увеличиваем размер шрифта для заголовка */
+  font-weight: 700;
+  margin-bottom: 30px; /* Увеличиваем отступ снизу */
+}
+
+#countdown-timer {
+  font-size: 2.5rem; /* Увеличиваем размер шрифта для таймера */
+  font-weight: 600;
+  margin-top: 20px;
+  color: #ff6f61; /* Bright color for the countdown */
+}
+
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 30px; /* Увеличиваем промежуток между кнопками */
+  margin-top: 40px; /* Увеличиваем отступ сверху */
+}
+
+/* Effect for buttons */
+button, .btn {
+  border: none;
+  color: #fff;
+  background-image: linear-gradient(30deg, #0400ff, #4ce3f7); /* Gradient */
+  border-radius: 25px; /* Увеличиваем скругление кнопок */
+  background-size: 100% auto;
+  font-family: inherit;
+  font-size: 18px; /* Увеличиваем размер шрифта */
+  padding: 0.8em 2em; /* Увеличиваем padding для кнопок */
+  text-decoration: none;
+  display: inline-block;
+  transition: background-position 0.3s ease, transform 0.3s ease;
+}
+
+button:hover, .btn:hover {
+  background-position: right center;
+  background-size: 200% auto;
+  animation: pulse512 1.5s infinite; /* Animation on hover */
+}
+
+/* Keyframe animation for pulse effect */
+@keyframes pulse512 {
+  0% {
+    box-shadow: 0 0 0 0 #05bada66;
+  }
+
+  70% {
+    box-shadow: 0 0 0 10px rgb(218 103 68 / 0%);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgb(218 103 68 / 0%);
+  }
+}
+
+.hero-buttons .btn {
+  padding: 1.2rem 2.4rem; /* Увеличиваем padding для кнопок */
+  font-size: 1.2rem; /* Увеличиваем размер шрифта кнопок */
+  border-radius: 50px;
+  background-color: #ff6f61;
+  color: white;
+  text-decoration: none;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.hero-buttons .btn:hover {
+  background-color: #e64a3c;
+  transform: scale(1.1); /* Увеличиваем масштаб при наведении */
+}
+
+.hero-buttons .btn:focus {
+  outline: none;
+}
+
+/* Countdown Timer Style */
+#countdown-timer {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #ff6f61;
+  margin-top: 20px;
+}
+
+#countdown-timer:before {
+  content: "До конференции: ";
+  font-size: 1.5rem;
+  color: white;
+}
+
+/* Hero Background Vector */
+.hero::before {
+  content: "";
   position: absolute;
-  width: 6px;
-  height: 11px;
-  border-right: 2px solid white;
-  border-bottom: 2px solid white;
-  top: 1px;
-  left: 5px;
-  transform: rotate(45deg) scale(0);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zY2hldHZpZXcvc3ZnIj4KPHJlY3Qgd2lkdGg9IjEwMDAiIGhlaWdodD0iMTAwMCIgc3R5bGU9ImZpbGw6I2ZmZmZmZiIgLz4KPHBhdGggZD0iTTEwMCAzMDBMIDIwMCAzMDAiIHN0eWxlPSJzdHJva2U6bm9uZSIgZD0iTTEwMCA2MDBMIDIwMCA2MDAiIHN0eWxlPSJzdHJva2U6bm9uZSIgZD0iTTEwMCAzMDBMIDIwMCAzMDAiIHN0eWxlPSJzdHJva2U6bm9uZSIgZD0iTTEwMCA2MDBMIDIwMCA2MDAiIHN0eWxlPSJzdHJva2U6bm9uZSIgZD0iTTEwMCAzMDBMIDIwMCAzMDAiIHN0eWxlPSJzdHJva2U6bm9uZSIgZD0iTTEwMCA3MDBMIDIwMCA3MDAiIHN0eWxlPSJzdHJva2U6bm9uZSIgZD0iTTEwMCAxMDBMIDIwMCAxMDAiIHN0eWxlPSJzdHJva2U6bm9uZSIgZD0iTTEwMCAyMDBMIDIwMCAyMDAiIHN0eWxlPSJzdHJva2U6bm9uZSIgZD0iTTEwMCAzMDBMIDIwMCAzMDAiIHN0eWxlPSJzdHJva2U6bm9uZSIgZD0iTTEwMCAzMDBMIDIwMCAzMDAiIHN0eWxlPSJzdHJva2U6bm9uZSIgZD0iTTEwMCAxMDAwIj4KPC9wYXRoPjwvc3ZnPg==');
+  background-size: cover;
+  z-index: 1;
+}
+
+/* Conference Topics Section */
+#conference-topics {
+  padding: 80px 0;
+  background: #001f3d;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  color: #fff;
+  font-weight: 600;
+}
+
+.topics-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  justify-items: center;
+}
+
+/* Flip Card */
+.flip-card {
+  background-color: transparent;
+  width: 250px;
+  height: 320px;
+  perspective: 1000px;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+.flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front, .flip-card-back {
+  box-shadow: 0 8px 14px 0 rgba(0,0,0,0.2);
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border: 1px solid #c3c6ce;
+  border-radius: 1rem;
+}
+
+.flip-card-front {
+  background: linear-gradient(120deg, #006bb6 60%, #004c87 88%);
+  color: white;
+  padding: 15px;
+}
+
+.flip-card-back {
+  background: linear-gradient(120deg, #008bf8 30%, #006bb6 88%);
+  color: white;
+  transform: rotateY(180deg);
+  padding: 15px;
+}
+
+.card-button {
+  transform: translate(-50%, 125%);
+  width: 60%;
+  border-radius: 1rem;
+  border: none;
+  background-color: #ff6f61;
+  color: #fff;
+  font-size: 1rem;
+  padding: .5rem 1rem;
+  position: absolute;
+  left: 50%;
+  bottom: 0;
   opacity: 0;
-  transition: all 0.2s ease;
+  transition: 0.3s ease-out;
 }
 
-/* Активное состояние — закрашенный фон и галочка */
-.remember-me input[type="checkbox"]:checked {
-  background-color: #0078d4;
-  border-color: #0078d4;
-}
-.remember-me input[type="checkbox"]:checked::after {
-  transform: rotate(45deg) scale(1);
-  opacity: 1;
+.card-button:focus {
+  outline: none;
 }
 
-/* Текст */
-.remember-me label {
-  cursor: pointer;
-  font-weight: 500;
+.card-button:hover {
+  background-color: #e64a3c;
+}
+
+/* Countdown Timer */
+#countdown-timer {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-top: 20px;
+  color: #ff6f61;
+}
+
+#countdown-timer:before {
+  content: "До конференции: ";
+  font-size: 1.2rem;
+  color: white;
+}
+
+/* Program Section */
+#program {
+  padding: 80px 0;
+  background: #f0f0f0;
+}
+
+.program-sec h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 40px;
   color: #333;
-  transition: color 0.2s;
-}
-.remember-me label:hover {
-  color: #0078d4;
 }
 
+.program-timeline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.program-card {
+  background-color: #fff;
+  padding: 25px;
+  margin: 15px;
+  border-radius: 15px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  width: 80%;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.program-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.program-card h3 {
+  font-size: 1.6rem;
+  margin-bottom: 10px;
+  color: #004a6d;
+  font-weight: bold;
+}
+
+.program-card p {
+  font-size: 1rem;
+  color: #777;
+}
+
+.btn-watch-program {
+  display: block;
+  margin: 30px auto;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  background-color: #006bb6;
+  color: white;
+  text-decoration: none;
+  border-radius: 50px;
+  text-align: center;
+}
+
+.btn-watch-program:hover {
+  background-color: #004c87;
+}
+
+/* Participate Section */
+#participate {
+  padding: 80px 0;
+  background: #ff6f61;
+  color: white;
+  text-align: center;
+}
+
+.participate h2 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.participate .section-description {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+}
+
+.participate .btn-lg {
+  padding: 20px 40px;
+  font-size: 1.2rem;
+  border-radius: 50px;
+  background: #ffcc00;
+  color: white;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.participate .btn-lg:hover {
+  background: #e64a3c;
+  transform: scale(1.05);
+}
+
+/* Footer Section */
+.site-footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 30px 0;
+}
+
+.site-footer a {
+  color: #ff6f61;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.site-footer a:hover {
+  color: #ffcc00;
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 3rem; /* Уменьшаем размер шрифта заголовка */
+  }
+
+  .hero-tagline {
+    font-size: 1.2rem;
+  }
+
+  .hero-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .topics-container {
+    grid-template-columns: 1fr;
+  }
+
+  .program-card {
+    width: 90%;
+  }
+}

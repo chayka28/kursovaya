@@ -1,8 +1,80 @@
 {% extends "base.html" %}
 
-{% block title %}Главная{% endblock %}
+{% block title %}Программа конференции{% endblock %}
 
 {% block content %}
-<h1>Главная страница</h1>
-<p>Контент главной страницы</p>
+<link rel="stylesheet" href="/style/program.css">
+<section class="program-hero">
+  <h1>Программа конференции</h1>
+  <p>📅 10–12 мая 2025 г. · Онлайн</p>
+</section>
+
+<section class="program-section">
+  <h2>📍 День 1 — 10 мая</h2>
+
+  <div class="schedule">
+
+    <div class="schedule-item">
+      <div class="time">10:00</div>
+      <div class="details">
+        <h3>Открытие конференции</h3>
+        <span>Zoom Hall 1</span>
+      </div>
+      <div class="actions">
+        <button class="hall-btn disabled">Войти в зал</button>
+      </div>
+    </div>
+
+    <div class="schedule-item">
+      <div class="time">11:00</div>
+      <div class="details">
+        <h3>Доклады секции «Web-технологии»</h3>
+        <span>Zoom Hall 1</span>
+      </div>
+      <div class="actions">
+        <button class="hall-btn disabled">Войти в зал</button>
+      </div>
+    </div>
+
+    <div class="schedule-item break">
+      <div class="time">13:00</div>
+      <div class="details">
+        <h3>Перерыв</h3>
+      </div>
+    </div>
+
+    <div class="schedule-item">
+      <div class="time">14:00</div>
+      <div class="details">
+        <h3>Доклады секции «AI и машинное обучение»</h3>
+        <span>Zoom Hall 2</span>
+      </div>
+      <div class="actions">
+        <button class="hall-btn disabled">Войти в зал</button>
+      </div>
+    </div>
+
+    <div class="schedule-item">
+      <div class="time">17:00</div>
+      <div class="details">
+        <h3>Круглый стол «IT-тренды 2025»</h3>
+        <span>Zoom Hall 1</span>
+      </div>
+      <div class="actions">
+        <button class="hall-btn disabled">Войти в зал</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="program-download">
+  <h2>📄 Полная программа</h2>
+  <p>Скачайте расписание конференции в формате PDF</p>
+  <a href="/download/program-pdf" class="btn primary" download>
+    Скачать программу в PDF
+  </a>
+</section>
+
+<script src="/scripts/program.js"></script>
 {% endblock %}

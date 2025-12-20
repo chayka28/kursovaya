@@ -1,28 +1,33 @@
 document.addEventListener('DOMContentLoaded', () => {
-
+  // Получаем элементы модальных окон
   const loginModal = document.getElementById('loginModal');
   const registerModal = document.getElementById('registerModal');
   const resetModal = document.getElementById('resetModal');
 
+  // Получаем кнопки для открытия модальных окон
   const loginBtn = document.getElementById('loginBtn');
   const registerBtn = document.getElementById('registerBtn');
   const forgotLink = document.getElementById('forgotPasswordLink');
 
+  // Получаем кнопки для закрытия окон
   const closeButtons = document.querySelectorAll('.close');
   const modals = [loginModal, registerModal, resetModal].filter(Boolean);
 
-  // -------------------------
-  // МОДАЛКИ
-  // -------------------------
+  // Функция для открытия модального окна
   function openModal(modal) {
     if (!modal) return;
     modal.style.display = 'flex';
   }
 
+  // Функция для закрытия всех модальных окон
   function closeAll() {
     modals.forEach(m => m.style.display = 'none');
   }
 
+  // Закрываем все модальные окна при загрузке страницы
+  closeAll();
+
+  // Открытие модальных окон по клику
   if (loginBtn && loginModal) {
     loginBtn.onclick = () => openModal(loginModal);
   }
@@ -38,18 +43,17 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
+  // Закрытие всех окон по клику на кнопку закрытия
   closeButtons.forEach(btn => {
     btn.onclick = () => closeAll();
   });
 
+  // Закрытие окон при клике вне области модального окна
   window.onclick = e => {
     if (modals.includes(e.target)) closeAll();
   };
 
-  // -------------------------
-  // ФОРМЫ
-  // -------------------------
-
+  // Обработка форм входа, регистрации и сброса пароля
   const loginForm = document.getElementById('loginForm');
   if (loginForm) {
     loginForm.onsubmit = async e => {

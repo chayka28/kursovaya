@@ -1,11 +1,127 @@
 {% extends "base.html" %}
 
-{% block title %}Главная{% endblock %}
+{% block title %}CodeFuture 2025 — Онлайн IT‑конференция{% endblock %}
 
 {% block content %}
-<!--начало страницы-->
+<link rel="stylesheet" href="/style/index.css">
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-left">
+      <img src="/assets/img/logo.png" alt="CodeFuture 2025" class="hero-logo">
+    </div>
+    <div class="hero-right">
+      <h1 class="hero-title">CodeFuture 2025</h1>
+      <p id="countdown-timer">Загрузка времени...</p> <!-- Countdown timer here -->
+      <div class="hero-buttons">
+        <a href="/thesis" class="btn">Подать тезис</a>
+        <a href="/apply" class="btn">Подать заявку</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Conference Topics Section -->
+<section id="conference-topics" class="section topics">
+  <h2 class="section-title">Темы конференции</h2>
+  <div class="topics-container">
+    <div class="flip-card">
+      <div class="flip-card-inner">
+        <div class="flip-card-front">
+          <h3 class="title">Веб‑разработка</h3>
+        </div>
+        <div class="flip-card-back">
+          <p>На сессии будут обсуждаться последние достижения в веб-разработке, включая новые фреймворки, такие как React, Vue.js и Angular. Мы рассмотрим, как эти технологии помогают создавать высококачественные веб-приложения.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="flip-card">
+      <div class="flip-card-inner">
+        <div class="flip-card-front">
+          <h3 class="title">Искусственный интеллект</h3>
+        </div>
+        <div class="flip-card-back">
+          <p>Искусственный интеллект активно используется в таких областях, как здравоохранение, финансы, транспорт. Мы обсудим, как AI помогает решать задачи в различных отраслях и машинное обучение на практике.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="flip-card">
+      <div class="flip-card-inner">
+        <div class="flip-card-front">
+          <h3 class="title">Кибербезопасность</h3>
+        </div>
+        <div class="flip-card-back">
+          <p>Мы рассмотрим важнейшие аспекты кибербезопасности, включая защиту от кибератак, шифрование данных и использование многофакторной аутентификации для обеспечения безопасности.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="flip-card">
+      <div class="flip-card-inner">
+        <div class="flip-card-front">
+          <h3 class="title">DevOps & Cloud</h3>
+        </div>
+        <div class="flip-card-back">
+          <p>На сессии мы обсудим внедрение DevOps практик для ускоренной разработки и автоматизации с использованием облачных технологий, таких как AWS и Google Cloud.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Program Section -->
+<section id="program" class="section program-sec">
+  <h2 class="section-title">Программа и сроки</h2>
+
+  <div class="program-timeline">
+    <div class="program-card">
+      <h3>10 мая 2025, 10:00</h3>
+      <p>Открытие конференции (Zoom Hall 1)</p>
+    </div>
+
+    <div class="program-card">
+      <h3>10 мая 2025, 11:00</h3>
+      <p>Доклады секции «Web-технологии»</p>
+    </div>
+
+    <div class="program-card">
+      <h3>10 мая 2025, 13:00</h3>
+      <p>Перерыв</p>
+    </div>
+
+    <div class="program-card">
+      <h3>10 мая 2025, 14:00</h3>
+      <p>Доклады секции «AI и машинное обучение»</p>
+    </div>
+
+    <div class="program-card">
+      <h3>10 мая 2025, 17:00</h3>
+      <p>Круглый стол «IT-тренды 2025»</p>
+    </div>
+  </div>
+
+  <a href="/program" class="btn btn-watch-program">
+    Смотреть программу
+  </a>
+</section>
 
 
+<!-- Participate Section -->
+<section id="participate" class="section participate">
+  <h2 class="section-title">Хочешь выступить?</h2>
+  <p class="section-description">Подай заявку и загрузи свои тезисы для выступления.</p>
+  <a href="/apply" class="btn btn-lg">Принять участие</a>
+</section>
 
-<!--конец страницы-->
+<!-- Footer Section -->
+<footer class="site-footer">
+  <p>Организатор: кафедра программной инженерии ВГТУ</p>
+  <p>Контакты: <a href="mailto:org@codefuture.ru">org@codefuture.ru</a></p>
+</footer>
+
+<script src="/scripts/index.js"></script>
+
 {% endblock %}
