@@ -31,3 +31,32 @@ topicCards.forEach(card => {
     card.classList.add('active');
   });
 });
+
+// ===== Random thesis background =====
+(async function loadBackgroundTheses() {
+  try {
+    const res = await fetch('/api/theses/random');
+    if (!res.ok) return;
+
+    const theses = await res.json();
+    const container = document.getElementById('thesis-background');
+
+    theses.forEach(t => {
+      const el = document.createElement('div');
+      el.className = 'thesis-bg-item';
+      el.style.left = Math.random() * 80 + '%';
+      el.style.animationDuration = (30 + Math.random() * 30) + 's';
+      el.style.animationDelay = (-Math.random() * 20) + 's';
+
+      el.innerHTML = `
+        <strong>${t.title}</strong>
+        ${t.abstract.slice(0, 160)}…
+      `;
+
+      container.appendChild(el);
+    });
+
+  } catch (e) {
+    console.error('Ошибка загрузки тезисов', e);
+  }
+})();

@@ -11,7 +11,8 @@ body {
 /* HEADER */
 header {
   position:fixed; top:0; left:0; width:100%;
-  background:#fff;
+  background: rgba(28,31,58,0.85);
+  backdrop-filter: blur(10px);
   box-shadow:0 2px 10px rgba(0,0,0,0.1);
   z-index:1000;
 }
@@ -32,9 +33,7 @@ header {
   transform:translateY(-10px);
   animation:logoFade 0.7s forwards;
 }
-@keyframes logoFade {
-  to { opacity:1; transform:translateY(0); }
-}
+@keyframes logoFade { to { opacity:1; transform:translateY(0); } }
 
 /* МЕНЮ */
 nav ul.menu {
@@ -43,27 +42,17 @@ nav ul.menu {
   align-items:center;
   gap:35px;
 }
-nav ul.menu li {
-  position:relative;
-}
+nav ul.menu li { position:relative; }
 nav ul.menu li a {
   text-decoration:none;
-  color:#1c1c1c;
+  color:#fff;
   font-weight:600;
   transition:color 0.3s;
   padding:8px 0;
 }
-nav ul.menu li a:hover {
-  color:#0078d4;
-}
-.arrow {
-  font-size:0.7em;
-  margin-left:4px;
-  transition:transform 0.3s;
-}
-.dropdown:hover .arrow {
-  transform:rotate(180deg);
-}
+nav ul.menu li a:hover { color:#6c63ff; }
+.arrow { font-size:0.7em; margin-left:4px; transition:transform 0.3s; }
+.dropdown:hover .arrow { transform:rotate(180deg); }
 
 /* ВЫПАДАЮЩЕЕ МЕНЮ */
 .dropdown-menu {
@@ -71,134 +60,108 @@ nav ul.menu li a:hover {
   position:absolute;
   top:100%;
   left:0;
-  background:#fff;
+  background: rgba(28,31,58,0.9);
+  backdrop-filter: blur(8px);
   box-shadow:0 8px 20px rgba(0,0,0,0.1);
   border-radius:10px;
   margin-top:10px;
   min-width:180px;
   overflow:hidden;
 }
-.dropdown:hover .dropdown-menu {
-  display:block;
-}
+.dropdown:hover .dropdown-menu { display:block; }
 .dropdown-menu li a {
   display:block;
   padding:12px 18px;
-  color:#1c1c1c;
+  color:#fff;
   font-weight:500;
   text-decoration:none;
   transition:background 0.2s, color 0.2s;
 }
-.dropdown-menu li a:hover {
-  background:#f5f5f5;
-  color:#0078d4;
-}
+.dropdown-menu li a:hover { background: rgba(108,99,255,0.2); }
 
 /* ВХОД / РЕГИСТРАЦИЯ */
-.auth-block {
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
+.auth-block { display:flex; align-items:center; gap:10px; }
 .auth-link {
-  color:#1c1c1c;
+  color:#fff;
   text-decoration:none;
   font-weight:600;
   font-size:14px;
   transition:color 0.3s;
 }
-.auth-link:hover {
-  color:#0078d4;
-}
-.divider {
-  width:1px;
-  height:20px;
-  background:#ccc;
-}
+.auth-link:hover { color:#6c63ff; }
+.divider { width:1px; height:20px; background:#ccc; }
 
 /* МОДАЛКИ */
 .modal {
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.6);
-  justify-content:center;
-  align-items:center;
-  z-index:2000;
-  backdrop-filter:blur(4px);
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.65);
+  backdrop-filter: blur(6px);
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
 }
+
 .modal-content {
-  background:#fff;
-  border-radius:14px;
-  padding:30px 25px;
-  width:90%;
-  max-width:400px;
-  box-shadow:0 8px 25px rgba(0,0,0,0.2);
-  animation:fadeIn 0.3s ease;
-  position:relative;
-}
-@keyframes fadeIn {
-  from {opacity:0; transform:scale(0.95);}
-  to {opacity:1; transform:scale(1);}
-}
-.modal-content .close {
-  position:absolute;
-  top:12px; right:16px;
-  font-size:22px; cursor:pointer;
-  color:#888;
-  transition:color 0.2s;
-}
-.modal-content .close:hover {
-  color:#000;
-}
-.modal-content h2 {
-  margin-bottom:20px;
-  text-align:center;
-  font-weight:600;
-  color:#1c1c1c;
-}
-.modal-content form {
+  background: linear-gradient(160deg,#1c1f3a,#262b5f);
+  color:#fff;
+  padding: 34px 30px;
+  width: 90%;
+  max-width: 420px;
+  border-radius: 26px;
+  box-shadow: 0 40px 80px rgba(0,0,0,.6);
   display:flex;
   flex-direction:column;
   gap:12px;
+  position: relative;
+  animation: modalIn .25s ease;
 }
-.modal-content input {
-  padding:12px;
-  border:1px solid #ccc;
-  border-radius:8px;
-  font-size:15px;
-  transition:border-color 0.2s, box-shadow 0.2s;
+
+.modal-content h2 {
+  text-align:center;
+  margin-bottom:14px;
+  background: linear-gradient(90deg,#fff,#c7c9ff);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
 }
-.modal-content input:focus {
-  border-color:#0078d4;
-  outline:none;
-  box-shadow:0 0 0 2px rgba(0,120,212,0.2);
+
+.modal-content input,
+.modal-content textarea {
+  width:100%;
+  background: rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:14px;
+  padding:14px;
+  margin-top:6px;
+  color:#fff;
 }
+
 .modal-content button {
-  padding:12px;
+  margin-top:12px;
+  padding:14px;
   border:none;
-  border-radius:8px;
-  background:#0078d4;
+  border-radius:14px;
+  background: linear-gradient(135deg,#6c63ff,#857dff);
   color:#fff;
   font-weight:600;
-  font-size:15px;
   cursor:pointer;
-  transition:background 0.3s;
 }
-.modal-content button:hover {
-  background:#005ea3;
+
+.modal-content .close {
+  position:absolute;
+  top:14px;
+  right:18px;
+  font-size:22px;
+  cursor:pointer;
+  opacity:.6;
 }
-.link {
-  display:block;
-  text-align:right;
-  margin-top:10px;
-  color:#0078d4;
-  font-size:14px;
-  text-decoration:none;
-  transition:color 0.3s;
-}
-.link:hover {
-  color:#005ea3;
+
+.modal-content .close:hover { opacity:1; }
+
+@keyframes modalIn {
+  from { opacity:0; transform:scale(.95); }
+  to { opacity:1; transform:scale(1); }
 }
 
 /* --- СТИЛЬ ДЛЯ "ЗАПОМНИТЬ МЕНЯ" --- */
@@ -207,31 +170,28 @@ nav ul.menu li a:hover {
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  color: #333;
+  color: #fff;
   cursor: pointer;
   user-select: none;
   margin-top: 4px;
 }
 
-/* Скрываем стандартный checkbox */
 .remember-me input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
   width: 18px;
   height: 18px;
-  border: 2px solid #0078d4;
+  border: 2px solid #6c63ff;
   border-radius: 5px;
   position: relative;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-/* Анимация при наведении */
 .remember-me input[type="checkbox"]:hover {
-  box-shadow: 0 0 0 3px rgba(0,120,212,0.15);
+  box-shadow: 0 0 0 3px rgba(108,99,255,0.25);
 }
 
-/* Галочка при активном состоянии */
 .remember-me input[type="checkbox"]::after {
   content: '';
   position: absolute;
@@ -246,23 +206,14 @@ nav ul.menu li a:hover {
   transition: all 0.2s ease;
 }
 
-/* Активное состояние — закрашенный фон и галочка */
 .remember-me input[type="checkbox"]:checked {
-  background-color: #0078d4;
-  border-color: #0078d4;
+  background-color: #6c63ff;
+  border-color: #6c63ff;
 }
 .remember-me input[type="checkbox"]:checked::after {
   transform: rotate(45deg) scale(1);
   opacity: 1;
 }
 
-/* Текст */
-.remember-me label {
-  cursor: pointer;
-  font-weight: 500;
-  color: #333;
-  transition: color 0.2s;
-}
-.remember-me label:hover {
-  color: #0078d4;
-}
+.remember-me label { cursor: pointer; font-weight: 500; color: #fff; transition: color 0.2s; }
+.remember-me label:hover { color: #6c63ff; }

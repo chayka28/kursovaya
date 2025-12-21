@@ -3,12 +3,22 @@
 {% block title %}Профиль{% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="/style/profile.css">
+
 <section class="profile-page">
 
   <div class="profile-card user-info">
     <h2>👤 Профиль</h2>
     <p><strong>Имя:</strong> {{ user.fullname }}</p>
     <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>Роль:</strong>
+      {% if last_application %}
+        {{ last_application.role }}
+      {% else %}
+        Не назначена
+      {% endif %}
+    </p>
+    <p><strong>Подано тезисов:</strong> {{ theses|length }}</p>
   </div>
 
   <div class="profile-card application-status">
@@ -32,24 +42,41 @@
     {% if theses %}
       <ul class="thesis-list">
         {% for thesis in theses %}
-          <li class="thesis-item" id="thesis-{{ thesis.id }}">
-            <div class="thesis-header">
-              <h4>{{ thesis.title }}</h4>
-              <button class="toggle-description-btn">&#x2193;</button>
+        <li class="thesis-item" id="thesis-{{ thesis.id }}">
+          <div class="thesis-header">
+            <h4>{{ thesis.title }}</h4>
+
+            <button class="toggle-description-btn" aria-label="Открыть тезис">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </button>
+
+            {% if thesis.status != "submitted" %}
               <span class="status {{ thesis.status }}">{{ thesis.status|capitalize }}</span>
-            </div>
-            <div class="thesis-description" style="display:none;">
-              <p>{{ thesis.abstract }}</p>
-            </div>
-            <div class="thesis-actions">
-              <button class="btn secondary edit-thesis-btn" data-id="{{ thesis.id }}" data-title="{{ thesis.title }}" data-abstract="{{ thesis.abstract }}">Редактировать</button>
-              <button class="button delete-thesis-btn" data-id="{{ thesis.id }}">
-                <svg viewBox="0 0 448 512" class="svgIcon">
-                  <path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"></path>
-                </svg>
-              </button>
-            </div>
-          </li>
+            {% endif %}
+          </div>
+
+          <div class="thesis-description">
+            <p>{{ thesis.abstract }}</p>
+          </div>
+
+          <div class="thesis-actions">
+            <button
+              class="btn secondary edit-thesis-btn"
+              data-id="{{ thesis.id }}"
+              data-title="{{ thesis.title }}"
+              data-abstract="{{ thesis.abstract }}">
+              Редактировать
+            </button>
+
+            <button class="button delete-thesis-btn" data-id="{{ thesis.id }}">
+              <svg viewBox="0 0 448 512" class="svgIcon">
+                <path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"></path>
+              </svg>
+            </button>
+          </div>
+        </li>
         {% endfor %}
       </ul>
     {% else %}
@@ -59,19 +86,30 @@
 
   <div class="profile-actions">
     <a href="/apply" class="btn primary">Подать заявку</a>
-    <a href="/thesis" class="btn secondary">Отправить тезисы</a>
+
+    {% if theses|length >= 5 %}
+      <button class="btn secondary" disabled title="Достигнут лимит в 5 тезисов">
+        Отправить тезисы
+      </button>
+      <p class="info-text">Вы достигли лимита в 5 поданных тезисов.</p>
+    {% else %}
+      <a href="/thesis" class="btn secondary">Отправить тезисы</a>
+    {% endif %}
   </div>
 
 </section>
 
-<!-- Модальное окно для редактирования -->
+<!-- МОДАЛКИ редактирования и удаления (как у тебя) -->
 <div id="edit-thesis-modal" class="modal" style="display:none;">
   <div class="modal-content">
     <h2>Редактирование тезиса</h2>
-    <label for="edit-title">Название:</label>
-    <input type="text" id="edit-title" required>
-    <label for="edit-abstract">Аннотация:</label>
-    <textarea id="edit-abstract" rows="6" required></textarea>
+
+    <label>Название</label>
+    <input type="text" id="edit-title">
+
+    <label>Аннотация</label>
+    <textarea id="edit-abstract" rows="6"></textarea>
+
     <div class="modal-buttons">
       <button id="save-thesis-btn" class="btn primary">Сохранить</button>
       <button id="cancel-edit-btn" class="btn secondary">Отмена</button>
@@ -79,11 +117,11 @@
   </div>
 </div>
 
-<!-- Модальное окно для подтверждения удаления -->
 <div id="confirm-delete-modal" class="modal" style="display:none;">
   <div class="modal-content">
-    <h2>Подтверждение удаления</h2>
-    <p>Вы уверены, что хотите удалить этот тезис?</p>
+    <h2>Удалить тезис?</h2>
+    <p>Это действие нельзя отменить.</p>
+
     <div class="modal-buttons">
       <button id="confirm-delete" class="btn danger">Удалить</button>
       <button id="cancel-delete" class="btn secondary">Отмена</button>
@@ -91,6 +129,5 @@
   </div>
 </div>
 
-<link rel="stylesheet" href="/style/profile.css">
 <script src="/scripts/profile.js"></script>
 {% endblock %}

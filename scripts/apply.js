@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const speakerFields = document.getElementById('speaker-fields');
     const roleInput = document.querySelector('input[name="role"]');
 
+    // Переключение ролей
     roleButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             roleButtons.forEach(b => b.classList.remove('active'));
@@ -26,10 +27,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    // Отправка формы
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (!USER_LOGGED_IN) {
-            showNotification("❌ Требуется авторизация");
+            showNotification("❌ Требуется авторизация", "error");
             return;
         }
 
@@ -47,20 +49,38 @@ document.addEventListener('DOMContentLoaded', function () {
             const result = await res.json();
 
             if (!res.ok) {
-                showNotification(result.message || "❌ Ошибка отправки");
+                showNotification(result.message || "❌ Ошибка отправки", "error");
                 return;
             }
 
-            showNotification("✅ Заявка успешно отправлена!");
+            showNotification("✅ Заявка успешно отправлена!", "success");
+
+            // Сброс формы
             form.reset();
+            listenerFields.classList.remove('hidden');
+            speakerFields.classList.add('hidden');
+            roleButtons.forEach(b => b.classList.remove('active'));
+            roleButtons[0].classList.add('active');
+            roleInput.value = 'listener';
+
+            // Авто-перезагрузка страницы через 1.5 сек
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+
         } catch (err) {
-            showNotification("❌ Ошибка отправки. Попробуйте позже.");
+            console.error(err);
+            showNotification("❌ Ошибка отправки. Попробуйте позже.", "error");
         }
     });
 
-    function showNotification(msg) {
+    // Функция уведомлений
+    function showNotification(msg, type = "info") {
         notification.textContent = msg;
-        notification.classList.add('show');
-        setTimeout(() => notification.classList.remove('show'), 5000);
+        notification.className = `notification ${type} show`;
+
+        setTimeout(() => {
+            notification.className = "notification";
+        }, 5000);
     }
 });

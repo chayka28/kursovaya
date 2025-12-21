@@ -2,17 +2,18 @@
 .admin-page {
     padding: 30px;
     font-family: 'Arial', sans-serif;
-    background-color: #f9f9f9;
+    background-color: #f4f6f8;
     min-height: 100vh;
-}
-
-.admin-page h1 {
-    margin-bottom: 20px;
-    font-size: 28px;
     color: #333;
 }
 
-/* === Вкладки === */
+.admin-page h1 {
+    margin-bottom: 25px;
+    font-size: 28px;
+    color: #1f2937;
+}
+
+/* === Вкладки: современный дизайн с плавной анимацией === */
 .tabs {
     display: flex;
     gap: 10px;
@@ -21,30 +22,50 @@
 }
 
 .tab-btn {
-    padding: 10px 20px;
-    background-color: #e0e0e0;
+    padding: 10px 25px;
+    background-color: #e2e8f0;
     border: none;
     cursor: pointer;
-    border-radius: 5px 5px 0 0;
-    transition: background-color 0.3s;
+    border-radius: 8px 8px 0 0;
+    font-weight: 600;
+    color: #1f2937;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.tab-btn::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 3px;
+    width: 0;
+    background-color: #4e73df;
+    transition: width 0.3s ease;
 }
 
 .tab-btn.active {
     background-color: #ffffff;
-    font-weight: bold;
-    border-bottom: 2px solid #ffffff;
+    color: #4e73df;
+    font-weight: 700;
+}
+
+.tab-btn.active::after {
+    width: 100%;
 }
 
 .tab-btn:hover {
-    background-color: #d5d5d5;
+    background-color: #cbd5e1;
 }
 
 /* === Содержимое вкладок === */
 .tab-content {
     background-color: #ffffff;
     padding: 20px;
-    border-radius: 0 5px 5px 5px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 0 8px 8px 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
 }
 
 /* === Таблицы === */
@@ -56,66 +77,74 @@
 
 .admin-table th, .admin-table td {
     padding: 12px 15px;
-    border: 1px solid #ddd;
+    border: 1px solid #e2e8f0;
     text-align: left;
     font-size: 14px;
 }
 
 .admin-table th {
-    background-color: #f0f0f0;
-    font-weight: bold;
+    background-color: #f1f5f9;
+    font-weight: 600;
+    color: #1f2937;
 }
 
 .admin-table tr:nth-child(even) {
-    background-color: #f9f9f9;
+    background-color: #f8fafc;
+}
+
+.admin-table tr:hover {
+    background-color: #e0e7ff;
 }
 
 /* === Статусы заявок === */
 .status {
     padding: 5px 10px;
-    border-radius: 4px;
+    border-radius: 12px;
     color: #fff;
     font-weight: bold;
     font-size: 13px;
+    text-transform: capitalize;
 }
 
 .status.pending {
-    background-color: #f0ad4e;
+    background-color: #f59e0b;
 }
 
 .status.approved {
-    background-color: #5cb85c;
+    background-color: #10b981;
 }
 
 .status.rejected {
-    background-color: #d9534f;
+    background-color: #ef4444;
 }
 
 /* === Кнопки действий === */
 .btn {
-    padding: 6px 10px;
+    padding: 6px 12px;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
     color: #fff;
-    font-weight: bold;
-    transition: background-color 0.3s;
+    font-weight: 600;
+    font-size: 13px;
+    transition: all 0.3s ease;
+    min-width: 40px;
 }
 
 .btn.success {
-    background-color: #5cb85c;
+    background-color: #10b981;
 }
 
 .btn.success:hover {
-    background-color: #4cae4c;
+    background-color: #059669;
 }
 
 .btn.danger {
-    background-color: #d9534f;
+    background-color: #ef4444;
 }
 
 .btn.danger:hover {
-    background-color: #c9302c;
+    background-color: #dc2626;
 }
 
 /* === Мобильная адаптивность === */

@@ -1,120 +1,115 @@
-/* ================= Profile Page ================= */
+/* ================= PAGE ================= */
 .profile-page {
   max-width: 900px;
   margin: 40px auto;
   display: flex;
   flex-direction: column;
   gap: 30px;
-  font-family: 'Arial', sans-serif;
+  font-family: 'Segoe UI', sans-serif;
 }
 
+/* ================= CARDS ================= */
 .profile-card {
-  background: #1e1e1e;
+  background: linear-gradient(160deg, #1c1f3a, #252a55);
   color: #fff;
-  padding: 20px 25px;
-  border-radius: 12px;
-  box-shadow: 0px 0px 25px rgba(0,0,0,0.2);
+  padding: 22px 26px;
+  border-radius: 18px;
+  box-shadow: 0 20px 50px rgba(0,0,0,.35);
 }
 
 .profile-card h2 {
-  margin-bottom: 15px;
-  font-size: 1.5rem;
+  margin-bottom: 14px;
 }
 
+/* ================= STATUS ================= */
 .status {
-  padding: 5px 12px;
+  padding: 6px 14px;
   border-radius: 20px;
+  font-size: .85rem;
   font-weight: 600;
-  font-size: 0.9rem;
 }
 
-.status.approved { background: #4caf50; }
-.status.rejected { background: #f44336; }
-.status.pending { background: #ff9800; }
+.status.approved { background: #3ddc84; color:#0f2e1d; }
+.status.rejected { background: #ff5c5c; }
+.status.pending { background: #ffb020; color:#222; }
 .status.none { background: #777; }
 
+/* ================= THESES ================= */
 .thesis-list {
   list-style: none;
   padding: 0;
-  margin: 0;
 }
 
 .thesis-item {
-  background: #2c2c2c;
+  background: #2a2f60;
+  padding: 16px;
+  border-radius: 14px;
   margin-bottom: 15px;
-  padding: 15px;
-  border-radius: 10px;
-  position: relative;
-  transition: transform 0.3s;
-}
-
-.thesis-item.open {
-  transform: scale(1.02);
+  transition: .3s;
 }
 
 .thesis-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 }
 
 .thesis-description {
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid #444;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: .35s;
 }
 
-.thesis-actions {
+.thesis-item.open .thesis-description {
+  max-height: 300px;
+  opacity: 1;
   margin-top: 10px;
-  display: flex;
-  gap: 10px;
 }
 
-/* ================= Buttons ================= */
-.btn {
-  padding: 8px 15px;
-  border-radius: 8px;
+/* ================= TOGGLE ================= */
+.toggle-description-btn {
+  background: none;
   border: none;
   cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s;
 }
 
-.btn.primary { background: #4caf50; color: #fff; }
-.btn.primary:hover { background: #45a049; }
+.toggle-description-btn svg {
+  width: 18px;
+  stroke: white;
+  transition: .3s;
+}
 
-.btn.secondary { background: #777; color: #fff; }
-.btn.secondary:hover { background: #555; }
+.thesis-item.open svg {
+  transform: rotate(180deg);
+}
 
-.btn.danger { background: #f44336; color: #fff; }
-.btn.danger:hover { background: #e53935; }
+/* ================= ACTIONS ================= */
+.thesis-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  align-items: center;
+}
 
-/* ================= Delete Button from Uiverse ================= */
+/* ===== DELETE BUTTON (Uiverse – сохранена) ===== */
 .button {
   width: 50px;
   height: 50px;
   border-radius: 50%;
   background-color: rgb(20, 20, 20);
   border: none;
-  font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.164);
   cursor: pointer;
-  transition-duration: .3s;
+  transition: .3s;
   overflow: hidden;
   position: relative;
 }
 
-.svgIcon {
-  width: 12px;
-  transition-duration: .3s;
-}
-
-.svgIcon path {
-  fill: white;
-}
+.svgIcon { width: 12px; transition: .3s; }
+.svgIcon path { fill: white; }
 
 .button:hover {
   width: 140px;
@@ -128,13 +123,13 @@
 }
 
 .button::before {
+  content: "Удалить";
   position: absolute;
   top: -20px;
-  content: "Delete";
-  color: white;
   font-size: 2px;
   opacity: 0;
-  transition-duration: .3s;
+  transition: .3s;
+  color: white;
 }
 
 .button:hover::before {
@@ -143,40 +138,121 @@
   transform: translateY(30px);
 }
 
-/* ================= Modals ================= */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0; top: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.6);
+/* ================= BUTTONS ================= */
+.btn {
+  padding: 10px 18px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.btn.primary {
+  background: linear-gradient(135deg, #6c63ff, #8f88ff);
+  color: white;
+}
+
+.btn.secondary {
+  background: linear-gradient(135deg, #3a3f6b, #5057a6);
+  color: white;
+}
+
+.btn.danger {
+  background: #ff5c5c;
+  color: white;
+}
+
+/* ================= PROFILE CTA ================= */
+.profile-actions {
+  display: flex;
   justify-content: center;
+  gap: 18px;
+}
+
+.profile-actions .btn {
+  padding: 14px 32px;
+  font-size: 1rem;
+  box-shadow: 0 15px 40px rgba(0,0,0,.3);
+}
+
+.profile-actions .btn:hover {
+  transform: translateY(-3px);
+}
+
+/* ================= MODALS ================= */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(8,12,35,.75);
+  backdrop-filter: blur(6px);
+  display: flex;
   align-items: center;
+  justify-content: center;
+  z-index: 9999;
 }
 
 .modal-content {
-  background: #1e1e1e;
-  color: #fff;
-  padding: 25px 30px;
-  border-radius: 12px;
-  max-width: 500px;
+  background: linear-gradient(160deg, #1c1f3a, #262b5f);
+  color:#fff;
+  padding: 34px 30px;
   width: 90%;
-  animation: slideDown 0.3s ease;
+  max-width: 520px;
+  border-radius: 26px;
+  box-shadow: 0 40px 80px rgba(0,0,0,.6);
+  position: relative;
+  animation: modalIn .25s ease;
 }
 
 .modal-content h2 {
-  margin-top: 0;
+  text-align:center;
+  margin-bottom:22px;
+  background: linear-gradient(90deg,#fff,#c7c9ff);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
 }
 
-.modal-buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 15px;
+.modal-content input,
+.modal-content textarea {
+  width:100%;
+  background: rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:14px;
+  padding:14px;
+  margin-top:10px;
+  color:#fff;
 }
 
-@keyframes slideDown {
-  from { transform: translateY(-50px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+.modal-content input:focus,
+.modal-content textarea:focus {
+  outline:none;
+  border-color:#6c63ff;
+  box-shadow:0 0 0 3px rgba(108,99,255,.25);
+}
+
+.modal-content button {
+  margin-top:14px;
+  padding:14px;
+  border:none;
+  border-radius:14px;
+  background: linear-gradient(135deg,#6c63ff,#857dff);
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.modal-content .close {
+  position:absolute;
+  top:14px;
+  right:18px;
+  font-size:22px;
+  cursor:pointer;
+  opacity:.6;
+}
+
+.modal-content .close:hover { opacity:1; }
+
+@keyframes modalIn {
+  from { opacity:0; transform:scale(.95); }
+  to { opacity:1; transform:scale(1); }
 }

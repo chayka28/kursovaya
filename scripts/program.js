@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', () => {
     const today = new Date();
     const confDate = new Date('2025-05-10');
@@ -20,3 +19,20 @@ document.addEventListener('DOMContentLoaded', () => {
 document.getElementById("download-btn").addEventListener("click", function () {
     window.location.href = "/download/program-pdf";  // This triggers the PDF download
 });
+
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.15
+  });
+
+  document.querySelectorAll('.schedule-item').forEach(item => {
+    observer.observe(item);
+  });
+

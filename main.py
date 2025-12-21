@@ -21,7 +21,7 @@ from passlib.context import CryptContext
 
 from sqlalchemy import (
     create_engine, Column, Integer, String,
-    DateTime, ForeignKey, Text
+    DateTime, ForeignKey, Text, func
 )
 from sqlalchemy.orm import (
     sessionmaker, declarative_base,
@@ -243,7 +243,37 @@ async def logout(request: Request, db: Session = Depends(get_db)):
     resp = RedirectResponse("/", 302)
     resp.delete_cookie("session_token")
     return resp
+# -----------------------------------------
+# PASSWORD RESET
+# -----------------------------------------
+@app.post("/reset-password")
+async def reset_request(data: ResetRequest, db: Session = Depends(get_db)):
+    user = db.query(User).filter_by(email=data.email).first()
+    if not user:
+        return {"message": "Если email существует — ссылка отправлена"}
+    token = str(uuid.uuid4())
+    expires = datetime.datetime.utcnow() + datetime.timedelta(hours=1)
+    r = PasswordReset(token=token, user_id=user.id, expires_at=expires)
+    db.add(r)
+    db.commit()
+    print("RESET LINK →", f"http://localhost:8000/reset-confirm?token={token}")
+    return {"message": "Если email существует — ссылка отправлена"}
 
+@app.get("/reset-confirm", response_class=HTMLResponse)
+async def reset_page(request: Request, token: str):
+    return templates.TemplateResponse("reset.html", {"request": request, "token": token})
+
+@app.post("/reset-confirm")
+async def reset_confirm(data: NewPassword, db: Session = Depends(get_db)):
+    r = db.query(PasswordReset).filter_by(token=data.token).first()
+    if not r or r.expires_at < datetime.datetime.utcnow():
+        return JSONResponse({"message": "Токен неверный или устарел"}, status_code=400)
+    user = db.query(User).filter_by(id=r.user_id).first()
+    user.password_hash = hash_password(data.new_password)
+    db.delete(r)
+    db.commit()
+
+    return {"message": "Пароль успешно изменён"}
 # -------------------------------------------------
 # PAGES
 # -------------------------------------------------
@@ -478,7 +508,22 @@ async def delete_thesis(thesis_id: int, db: Session = Depends(get_db)):
 
     return {"message": "Тезис успешно удален"}
 
+@app.get("/api/theses/random")
+def random_theses(db: Session = Depends(get_db)):
+    theses = (
+        db.query(Thesis)
+        .filter(Thesis.status == "submitted")
+        .order_by(func.random())
+        .limit(8)
+        .all()
+    )
 
+    return [
+        {
+            "title": t.title,
+            "abstract": t.abstract
+        } for t in theses
+    ]
 
 # -------------------------------------------------
 # ADMIN PANEL
@@ -491,10 +536,32 @@ async def admin_panel(request: Request, db: Session = Depends(get_db)):
 
     applications = db.query(Application).order_by(Application.submitted_at.desc()).all()
     theses = db.query(Thesis).order_by(Thesis.created_at.desc()).all()
+    messages = db.query(ContactMessage).order_by(ContactMessage.created_at.desc()).all()
+
     return templates.TemplateResponse(
         "admin.html",
-        {"request": request, "user": user, "applications": applications, "theses": theses}
+        {"request": request, "user": user, "applications": applications, "theses": theses, "messages": messages}
     )
+
+@app.post("/admin/thesis/{thesis_id}/approve")
+async def approve_thesis(thesis_id: int, request: Request, db: Session = Depends(get_db)):
+    user = get_current_user(request, db)
+    require_admin(user)
+    thesis = db.query(Thesis).filter_by(id=thesis_id).first()
+    if not thesis: raise HTTPException(404, "Тезис не найден")
+    thesis.status = "approved"
+    db.commit()
+    return {"message": "Тезис одобрен"}
+
+@app.post("/admin/thesis/{thesis_id}/reject")
+async def reject_thesis(thesis_id: int, request: Request, db: Session = Depends(get_db)):
+    user = get_current_user(request, db)
+    require_admin(user)
+    thesis = db.query(Thesis).filter_by(id=thesis_id).first()
+    if not thesis: raise HTTPException(404, "Тезис не найден")
+    thesis.status = "rejected"
+    db.commit()
+    return {"message": "Тезис отклонён"}
 
 @app.post("/admin/application/{app_id}/approve")
 async def approve_application(app_id: int, request: Request, db: Session = Depends(get_db)):
