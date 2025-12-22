@@ -1,98 +1,81 @@
-/* ===========================
-   Форма подачи тезисов
-   =========================== */
 .thesis-form {
-  max-width: 600px;
-  margin: 40px auto;
-  background: #fff;
-  padding: 30px;
-  border-radius: 14px;
-  box-shadow: 0 10px 30px rgba(0,0,0,.08);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 620px;
+  margin: 50px auto;
+  background: linear-gradient(160deg,#1c1f3a,#262b5f);
+  padding: 36px;
+  border-radius: 22px;
+  box-shadow: 0 30px 70px rgba(0,0,0,.45);
+  color: #fff;
 }
 
 .thesis-form h2 {
-  margin-bottom: 20px;
-  color: #333;
-  font-size: 24px;
   text-align: center;
+  margin-bottom: 20px;
+  background: linear-gradient(90deg,#fff,#c7c9ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-/* Поля ввода */
+.thesis-description {
+  color: rgba(255,255,255,.75);
+  margin-bottom: 16px;
+  font-size: .95rem;
+}
+
 .thesis-form input,
 .thesis-form textarea {
   width: 100%;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 14px;
+  padding: 14px;
   margin-bottom: 14px;
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 16px;
-  outline: none;
-  transition: 0.3s;
+  color: #fff;
 }
 
 .thesis-form input:focus,
 .thesis-form textarea:focus {
-  border-color: #4e73df;
-  box-shadow: 0 0 5px rgba(78, 115, 223, 0.4);
+  outline: none;
+  border-color: #6c63ff;
+  box-shadow: 0 0 0 3px rgba(108,99,255,.3);
 }
 
-/* Кнопка отправки */
 .thesis-form button {
   width: 100%;
-  padding: 12px;
-  background: #4e73df;
-  color: white;
-  font-size: 16px;
+  padding: 14px;
+  border-radius: 14px;
   border: none;
-  border-radius: 10px;
+  background: linear-gradient(135deg,#6c63ff,#8f88ff);
+  color: #fff;
+  font-weight: 600;
   cursor: pointer;
-  transition: 0.3s;
-}
-
-.thesis-form button:hover:not(:disabled) {
-  background: #2e59d9;
 }
 
 .thesis-form button:disabled {
-  background-color: #ccc;
+  background: #555;
   cursor: not-allowed;
 }
 
-/* ===========================
-   Уведомления
-   =========================== */
 .notification {
-  padding: 14px 20px;
-  margin: 12px 0;
-  border-radius: 8px;
-  font-size: 16px;
-  display: block;
-  font-weight: 500;
+  padding: 14px 18px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  font-weight: 600;
 }
 
-/* Успешные уведомления */
 .notification.success {
-  background-color: #d4edda;
-  color: #155724;
-  border: 1px solid #c3e6cb;
-  opacity: 1;           /* всегда видимы */
-  transition: none;     /* отключаем анимацию */
+  background: #3ddc84;
+  color: #0f2e1d;
 }
 
-/* Ошибки */
 .notification.error {
-  background-color: #f8d7da;
-  color: #721c24;
-  border: 1px solid #f5c6cb;
-  opacity: 1;
-  transition: none;
+  background: #ff5c5c;
+  color: #fff;
 }
 
-/* Счетчик тезисов */
 #thesis-counter {
-  font-size: 16px;
-  margin-bottom: 14px;
-  color: #555;
   text-align: center;
+  margin-bottom: 14px;
+  color: #c7c9ff;
+  font-weight: 600;
 }

@@ -1,69 +1,51 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // Получаем элементы модальных окон
+  // ===== Получение элементов =====
   const loginModal = document.getElementById('loginModal');
   const registerModal = document.getElementById('registerModal');
   const resetModal = document.getElementById('resetModal');
+  const resetLinkModal = document.getElementById('resetLinkModal');
 
-  // Получаем кнопки для открытия модальных окон
   const loginBtn = document.getElementById('loginBtn');
   const registerBtn = document.getElementById('registerBtn');
   const forgotLink = document.getElementById('forgotPasswordLink');
 
-  // Получаем кнопки для закрытия окон
   const closeButtons = document.querySelectorAll('.close');
-  const modals = [loginModal, registerModal, resetModal].filter(Boolean);
+  const modals = [loginModal, registerModal, resetModal, resetLinkModal].filter(Boolean);
 
-  // Функция для открытия модального окна
+  const loginNotification = document.getElementById('loginNotification');
+  const registerNotification = document.getElementById('registerNotification');
+  const resetNotification = document.getElementById('resetNotification');
+  const resetLinkEl = document.getElementById('resetLink');
+  const resetLinkClose = document.getElementById('resetLinkClose');
+
+  // ===== Функции открытия/закрытия =====
   function openModal(modal) {
     if (!modal) return;
     modal.style.display = 'flex';
   }
 
-  // Функция для закрытия всех модальных окон
   function closeAll() {
     modals.forEach(m => m.style.display = 'none');
   }
 
-  // Закрываем все модальные окна при загрузке страницы
   closeAll();
 
-  // Открытие модальных окон по клику
-  if (loginBtn && loginModal) {
-    loginBtn.onclick = () => openModal(loginModal);
-  }
+  if (loginBtn) loginBtn.onclick = () => openModal(loginModal);
+  if (registerBtn) registerBtn.onclick = () => openModal(registerModal);
+  if (forgotLink) forgotLink.onclick = () => { closeAll(); openModal(resetModal); };
 
-  if (registerBtn && registerModal) {
-    registerBtn.onclick = () => openModal(registerModal);
-  }
+  closeButtons.forEach(btn => btn.onclick = () => closeAll());
+  window.onclick = e => { if (modals.includes(e.target)) closeAll(); };
 
-  if (forgotLink && resetModal) {
-    forgotLink.onclick = () => {
-      closeAll();
-      openModal(resetModal);
-    };
-  }
-
-  // Закрытие всех окон по клику на кнопку закрытия
-  closeButtons.forEach(btn => {
-    btn.onclick = () => closeAll();
-  });
-
-  // Закрытие окон при клике вне области модального окна
-  window.onclick = e => {
-    if (modals.includes(e.target)) closeAll();
-  };
-
-  // Обработка форм входа, регистрации и сброса пароля
+  // ===== Форма Входа =====
   const loginForm = document.getElementById('loginForm');
   if (loginForm) {
     loginForm.onsubmit = async e => {
       e.preventDefault();
-
       const data = {
         email: loginForm.elements["email"].value,
         password: loginForm.elements["password"].value
       };
-
       const remember = loginForm.elements["rememberMe"]?.checked;
 
       const response = await fetch("/login", {
@@ -73,28 +55,61 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       const result = await response.json();
-      alert(result.message || "Авторизация успешна");
-      closeAll();
 
-      if (response.ok && remember) {
-        localStorage.setItem("userEmail", data.email);
-      } else {
-        localStorage.removeItem("userEmail");
+      if (response.ok) {
+        if (remember) localStorage.setItem("userEmail", data.email);
+        else localStorage.removeItem("userEmail");
+        location.reload();
+      } else if (loginNotification) {
+        loginNotification.textContent = result.message || "Ошибка входа";
+        loginNotification.style.display = "block";
+        loginNotification.style.color = "#ef4444";
+        setTimeout(() => loginNotification.style.display = "none", 5000);
       }
-
-      if (response.ok) location.reload();
     };
   }
 
+  // ===== Форма Регистрации =====
   const registerForm = document.getElementById('registerForm');
   if (registerForm) {
+    const passwordInput = registerForm.elements["password"];
+    const strengthBar = document.getElementById("strength-bar");
+    const rules = {
+      length: v => v.length >= 8,
+      letter: v => /[a-zA-Z]/.test(v),
+      digit: v => /\d/.test(v),
+      special: v => /[!@#$%^&*]/.test(v)
+    };
+
+    passwordInput?.addEventListener("input", () => {
+      const value = passwordInput.value;
+      let passed = 0;
+      Object.entries(rules).forEach(([key, check]) => {
+        const el = document.querySelector(`[data-rule="${key}"]`);
+        if (!el) return;
+        if (check(value)) { el.classList.add("valid"); el.classList.remove("invalid"); passed++; }
+        else { el.classList.add("invalid"); el.classList.remove("valid"); }
+      });
+      strengthBar.style.width = `${passed * 25}%`;
+      strengthBar.className = "strength-bar";
+      if (passed >= 3) strengthBar.classList.add("medium");
+      if (passed === 4) strengthBar.classList.add("strong");
+    });
+
     registerForm.onsubmit = async e => {
       e.preventDefault();
+      if (!strengthBar.classList.contains("strong")) {
+        registerNotification.textContent = "Пароль недостаточно надёжный!";
+        registerNotification.style.display = "block";
+        registerNotification.style.color = "#ef4444";
+        setTimeout(() => registerNotification.style.display = "none", 5000);
+        return;
+      }
 
       const data = {
         fullname: registerForm.elements["fullname"].value,
         email: registerForm.elements["email"].value,
-        password: registerForm.elements["password"].value
+        password: passwordInput.value
       };
 
       const response = await fetch("/register", {
@@ -102,47 +117,50 @@ document.addEventListener('DOMContentLoaded', () => {
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(data)
       });
-
       const result = await response.json();
-      alert(result.message || "Регистрация успешна");
-      closeAll();
+
+      if (response.ok) closeAll();
+      else {
+        registerNotification.textContent = result.message || "Ошибка регистрации";
+        registerNotification.style.display = "block";
+        registerNotification.style.color = "#ef4444";
+        setTimeout(() => registerNotification.style.display = "none", 5000);
+      }
     };
   }
 
+  // ===== Форма Сброса пароля =====
   const resetForm = document.getElementById('resetForm');
   if (resetForm) {
     resetForm.onsubmit = async e => {
       e.preventDefault();
-
-      const data = {
-        email: resetForm.elements["email"].value
-      };
-
+      const data = { email: resetForm.elements["email"].value };
       const response = await fetch("/reset-password", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(data)
       });
-
       const result = await response.json();
-      alert(result.message || "Письмо отправлено");
-      closeAll();
+
+      if (response.ok && result.reset_link) {
+          resetLinkEl.href = result.reset_link;
+          resetLinkEl.textContent = result.reset_link;
+          openModal(resetLinkModal);  
+      } else if (resetNotification) {
+        resetNotification.textContent = result.message || "Ошибка отправки ссылки";
+        resetNotification.style.display = "block";
+        resetNotification.style.color = "#ef4444";
+        setTimeout(() => resetNotification.style.display = "none", 5000);
+      }
     };
   }
 
-});
+  if (resetLinkClose) resetLinkClose.onclick = () => resetLinkModal.style.display = "none";
 
-// -------------------------
-// ЗАПОМНИТЬ МЕНЯ
-// -------------------------
-window.addEventListener("DOMContentLoaded", () => {
+  // ===== Запомнить email =====
   const savedEmail = localStorage.getItem("userEmail");
-  const form = document.getElementById('loginForm');
-
-  if (savedEmail && form) {
-    form.elements["email"].value = savedEmail;
-    if (form.elements["rememberMe"]) {
-      form.elements["rememberMe"].checked = true;
-    }
+  if (savedEmail && loginForm) {
+    loginForm.elements["email"].value = savedEmail;
+    if (loginForm.elements["rememberMe"]) loginForm.elements["rememberMe"].checked = true;
   }
 });

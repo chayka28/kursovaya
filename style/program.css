@@ -2,9 +2,11 @@
 
 :root {
   --bg-dark: #070b1a;
-  --bg-panel: rgba(255,255,255,.06);
-  --bg-panel-strong: rgba(255,255,255,.1);
-  --border-soft: rgba(255,255,255,.16);
+  --bg-panel: rgba(11, 16, 45, .92);
+  --bg-panel-soft: rgba(15, 22, 70, .85);
+  --bg-panel-break: rgba(9, 14, 40, .7);
+
+  --border-soft: rgba(140, 150, 255, .18);
 
   --accent: #6c63ff;
   --accent-soft: #8f88ff;
@@ -18,8 +20,8 @@
 .program-hero {
   position: relative;
   background:
-    radial-gradient(1200px 500px at 50% -20%, rgba(108,99,255,.25), transparent 70%),
-    linear-gradient(180deg, #070b1a, #0f1533);
+    radial-gradient(1200px 500px at 50% -20%, rgba(108,99,255,.22), transparent 70%),
+    linear-gradient(180deg, #070b1a, #0b1030);
   color: var(--text-main);
   padding: 130px 20px 90px;
   text-align: center;
@@ -95,7 +97,7 @@
     var(--accent),
     transparent
   );
-  opacity: .8;
+  opacity: .7;
 }
 
 /* ================= ITEM ================= */
@@ -107,13 +109,17 @@
   gap: 26px;
   align-items: center;
 
-  background: var(--bg-panel);
-  backdrop-filter: blur(14px);
+  background: linear-gradient(
+    180deg,
+    var(--bg-panel),
+    var(--bg-panel-soft)
+  );
+
   border-radius: 22px;
   padding: 28px 32px;
 
   box-shadow:
-    0 25px 60px rgba(0,0,0,.6),
+    0 30px 80px rgba(0,0,0,.65),
     inset 0 0 0 1px var(--border-soft);
 
   transition:
@@ -137,20 +143,21 @@
 }
 
 .schedule-item:hover {
-  transform: translateY(-10px);
+  transform: translateY(-8px);
   box-shadow:
-    0 70px 140px rgba(108,99,255,.55),
-    inset 0 0 0 1px rgba(165,180,252,.7);
+    0 60px 120px rgba(108,99,255,.45),
+    inset 0 0 0 1px rgba(165,180,252,.55);
 }
 
 /* break */
 .schedule-item.break {
-  background: rgba(255,255,255,.04);
-  opacity: .75;
+  background: var(--bg-panel-break);
+  opacity: .65;
 }
 
 .schedule-item.break::before {
-  background: #9ca3af;
+  background: #6b7280;
+  box-shadow: none;
 }
 
 /* ================= TEXT ================= */
@@ -192,18 +199,18 @@
 }
 
 .hall-btn.disabled {
-  background: linear-gradient(135deg,#4b5563,#374151);
+  background: linear-gradient(135deg,#374151,#1f2933);
   box-shadow: none;
   cursor: not-allowed;
-  opacity: .6;
+  opacity: .55;
 }
 
 /* ================= DOWNLOAD ================= */
 
 .program-download {
   background:
-    radial-gradient(900px 400px at 50% 0%, rgba(108,99,255,.25), transparent 70%),
-    linear-gradient(180deg,#070b1a,#0f1533);
+    radial-gradient(900px 400px at 50% 0%, rgba(108,99,255,.22), transparent 70%),
+    linear-gradient(180deg,#070b1a,#0b1030);
   padding: 100px 20px;
   text-align: center;
   color: #fff;
@@ -223,14 +230,12 @@
   font-size: 1.05rem;
 }
 
-/* ================= SCROLL ANIMATION (SAFE) ================= */
+/* ================= SCROLL ANIMATION ================= */
 
-/* по умолчанию ВИДИМО */
 .schedule-item {
   opacity: 1;
 }
 
-/* анимация ТОЛЬКО если JS добавил класс */
 .schedule-item.visible {
   animation: fadeUp .7s ease both;
 }

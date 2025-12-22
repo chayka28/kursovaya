@@ -6,47 +6,58 @@
 <link rel="stylesheet" href="/style/thesis.css">
 
 <section class="thesis-form">
+
   <h2>📄 Тезисы докладов</h2>
 
   <p class="thesis-description">
     Тезисы — это краткое описание вашего будущего доклада.
-    Они помогают программному комитету оценить актуальность,
-    практическую ценность и соответствие тематике конференции.
+    Они используются программным комитетом для формирования программы конференции.
   </p>
 
-  <p class="thesis-description">
-    Одобренные тезисы:
-    <ul>
-      <li>участвуют в формировании программы</li>
-      <li>публикуются на сайте конференции</li>
-      <li>помогают слушателям выбрать интересные доклады</li>
-    </ul>
-  </p>
-
-  {% if not user.is_authenticated %}
+  <!-- 1. НЕ АВТОРИЗОВАН -->
+  {% if not user %}
     <div class="notification error">
       ❌ Для отправки тезисов необходимо <a href="/login">войти в систему</a>
     </div>
 
+  <!-- 2. НЕ SPEAKER -->
+  {% elif user.role != "speaker" %}
+    <div class="notification error">
+      ❌ Отправка тезисов доступна только <strong>спикерам</strong>
+    </div>
+
+  <!-- 3. ЛИМИТ -->
   {% elif thesis_count >= 5 %}
     <div class="notification success">
-      ✅ Достигнут лимит 5 тезисов. Управление доступно в профиле.
+      ✅ Вы достигли лимита — 5 тезисов. Управление доступно в профиле.
     </div>
 
+  <!-- 4. ВСЁ ОК -->
   {% else %}
     <div id="notification" class="notification" style="display:none;"></div>
+
     <div id="thesis-counter">
-      Вы отправили {{ thesis_count or 0 }} / 5 тезисов
+      Вы отправили {{ thesis_count }} / 5 тезисов
     </div>
 
-    <form id="thesis-form">
+    <form id="thesis-form"
+          data-thesis-count="{{ thesis_count }}"
+          data-user-role="{{ user.role }}">
+
       <input type="text" name="title" placeholder="Название тезиса" required>
-      <textarea name="abstract" rows="6" placeholder="Краткое описание доклада" required></textarea>
-      <button type="submit" id="submit-thesis">Отправить</button>
+
+      <textarea name="abstract"
+                rows="6"
+                placeholder="Краткое описание доклада"
+                required></textarea>
+
+      <button type="submit" id="submit-thesis">
+        Отправить тезис
+      </button>
     </form>
   {% endif %}
-  </section>
 
+</section>
 
 <script src="/scripts/thesis.js"></script>
 {% endblock %}

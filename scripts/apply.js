@@ -10,13 +10,16 @@ document.addEventListener('DOMContentLoaded', function () {
     const speakerFields = document.getElementById('speaker-fields');
     const roleInput = document.querySelector('input[name="role"]');
 
-    // Переключение ролей
+    /* ================= ROLE SWITCH ================= */
+
     roleButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             roleButtons.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
+
             const role = btn.dataset.role;
             roleInput.value = role;
+
             if (role === 'listener') {
                 listenerFields.classList.remove('hidden');
                 speakerFields.classList.add('hidden');
@@ -27,9 +30,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Отправка формы
+    /* ================= FORM SUBMIT ================= */
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
+
         if (!USER_LOGGED_IN) {
             showNotification("❌ Требуется авторизация", "error");
             return;
@@ -53,17 +58,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
+            /* ===== SUCCESS ===== */
+
             showNotification("✅ Заявка успешно отправлена!", "success");
 
-            // Сброс формы
-            form.reset();
-            listenerFields.classList.remove('hidden');
-            speakerFields.classList.add('hidden');
-            roleButtons.forEach(b => b.classList.remove('active'));
-            roleButtons[0].classList.add('active');
-            roleInput.value = 'listener';
+            // На всякий случай блокируем повторную отправку
+            form.querySelector('button[type="submit"]').disabled = true;
 
-            // Авто-перезагрузка страницы через 1.5 сек
+            // Перезагрузка страницы через 1.5 сек
             setTimeout(() => {
                 window.location.reload();
             }, 1500);
@@ -74,7 +76,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Функция уведомлений
+    /* ================= NOTIFICATION ================= */
+
     function showNotification(msg, type = "info") {
         notification.textContent = msg;
         notification.className = `notification ${type} show`;

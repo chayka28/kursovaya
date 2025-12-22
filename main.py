@@ -1,6 +1,7 @@
 import os
 import uuid
 import datetime
+import re
 from typing import Optional
 from fastapi.responses import FileResponse
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
@@ -56,6 +57,7 @@ class User(Base):
     password_hash = Column(String, nullable=False)
     is_admin = Column(Integer, default=0)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    role = Column(String, default="guest", nullable=False)
 
     theses = relationship("Thesis", back_populates="author", cascade="all, delete")
     applications = relationship("Application", back_populates="user", cascade="all, delete")
@@ -183,6 +185,16 @@ def require_admin(user: User):
     if not user or not user.is_admin:
         raise HTTPException(403, "Access denied")
 
+def validate_password(password: str):
+    if len(password) < 8:
+        raise HTTPException(400, "Минимум 8 символов")
+    if not re.search(r"[A-Z]", password):
+        raise HTTPException(400, "Нужна заглавная буква")
+    if not re.search(r"[0-9]", password):
+        raise HTTPException(400, "Нужна цифра")
+    if not re.search(r"[!@#$%^&*]", password):
+        raise HTTPException(400, "Нужен спецсимвол")
+    
 # -------------------------------------------------
 # AUTH
 # -------------------------------------------------
@@ -212,10 +224,13 @@ async def register(data: RegisterData, db: Session = Depends(get_db)):
     if db.query(User).filter_by(email=data.email).first():
         return JSONResponse({"message": "Пользователь уже существует"}, 400)
 
+    validate_password(data.password)
+
     user = User(
         email=data.email,
         fullname=data.fullname,
         password_hash=hash_password(data.password),
+        role='guest'
     )
     db.add(user)
     db.commit()
@@ -249,15 +264,20 @@ async def logout(request: Request, db: Session = Depends(get_db)):
 @app.post("/reset-password")
 async def reset_request(data: ResetRequest, db: Session = Depends(get_db)):
     user = db.query(User).filter_by(email=data.email).first()
+
     if not user:
-        return {"message": "Если email существует — ссылка отправлена"}
+        return {"message": "Если email существует — ссылка будет показана"}
+
     token = str(uuid.uuid4())
     expires = datetime.datetime.utcnow() + datetime.timedelta(hours=1)
-    r = PasswordReset(token=token, user_id=user.id, expires_at=expires)
-    db.add(r)
+
+    db.add(PasswordReset(token=token, user_id=user.id, expires_at=expires))
     db.commit()
-    print("RESET LINK →", f"http://localhost:8000/reset-confirm?token={token}")
-    return {"message": "Если email существует — ссылка отправлена"}
+
+    return {
+        "reset_link": f"/reset-confirm?token={token}"
+    }
+
 
 @app.get("/reset-confirm", response_class=HTMLResponse)
 async def reset_page(request: Request, token: str):
@@ -268,6 +288,9 @@ async def reset_confirm(data: NewPassword, db: Session = Depends(get_db)):
     r = db.query(PasswordReset).filter_by(token=data.token).first()
     if not r or r.expires_at < datetime.datetime.utcnow():
         return JSONResponse({"message": "Токен неверный или устарел"}, status_code=400)
+    
+    validate_password(data.new_password)
+
     user = db.query(User).filter_by(id=r.user_id).first()
     user.password_hash = hash_password(data.new_password)
     db.delete(r)
@@ -369,26 +392,6 @@ async def profile(request: Request, db: Session = Depends(get_db)):
     )
 
 
-@app.get("/admin", response_class=HTMLResponse)
-async def admin_panel(request: Request, db: Session = Depends(get_db)):
-    user = get_current_user(request, db)
-
-    if not user or not user.is_admin:
-        raise HTTPException(status_code=403)
-
-    applications = db.query(Application).order_by(Application.submitted_at.desc()).all()
-    theses = db.query(Thesis).order_by(Thesis.created_at.desc()).all()
-
-    return templates.TemplateResponse(
-        "admin.html",
-        {
-            "request": request,
-            "user": user,
-            "applications": applications,
-            "theses": theses
-        }
-    )
-
 # -------------------------------------------------
 # APPLICATION SUBMIT
 # -------------------------------------------------
@@ -424,6 +427,9 @@ async def submit_application(
     )
 
     db.add(app_obj)
+
+    user.role = data.get("role")
+
     db.commit()
 
     return {"message": "Заявка успешно отправлена"}
@@ -540,7 +546,13 @@ async def admin_panel(request: Request, db: Session = Depends(get_db)):
 
     return templates.TemplateResponse(
         "admin.html",
-        {"request": request, "user": user, "applications": applications, "theses": theses, "messages": messages}
+        {
+            "request": request,
+            "user": user,
+            "applications": applications,
+            "theses": theses,
+            "messages": messages
+        }
     )
 
 @app.post("/admin/thesis/{thesis_id}/approve")
@@ -573,6 +585,7 @@ async def approve_application(app_id: int, request: Request, db: Session = Depen
         raise HTTPException(404, detail="Заявка не найдена")
 
     app_obj.status = "approved"
+    app_obj.user.role = app_obj.role
     db.commit()
     return JSONResponse({"message": "Заявка одобрена"}, status_code=200)
 

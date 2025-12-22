@@ -57,3 +57,16 @@
     document.getElementById(btn.dataset.tab).classList.add('active');
   }
 });
+
+document.querySelectorAll("th[data-sort]").forEach(th => {
+  th.onclick = () => {
+    const index = th.cellIndex;
+    const rows = [...th.closest("table").tbody.rows];
+
+    rows.sort((a,b) =>
+      a.cells[index].innerText.localeCompare(b.cells[index].innerText)
+    );
+
+    rows.forEach(r => th.closest("tbody").appendChild(r));
+  };
+});

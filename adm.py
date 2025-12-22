@@ -11,7 +11,7 @@ engine = create_engine(
 SessionLocal = sessionmaker(bind=engine)
 db = SessionLocal()
 
-email = "q@q.com"  # <- замени на свой email
+email = "q@q.com"  # <- заменить на свой email
 
 user = db.query(User).filter_by(email=email).first()
 if not user:
